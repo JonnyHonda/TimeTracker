@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="5"
+    android:columnCount="2"
+    android:padding="5dp"
+    android:textAppearance="?android:attr/textAppearanceSmall">
+    <TextView
+        android:text="Medium Text"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/apiUserNme"
+        android:layout_columnSpan="2" />
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1"
+        android:layout_columnSpan="2" />
+    <Button
+        android:text="Start"
+        android:id="@+id/btn_start" />
+    <Button
+        android:text="Stop"
+        android:id="@+id/btn_stop" />
+    <Button
+        android:text="Settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_main"
+        android:layout_columnSpan="2" />
+    <Button
+        android:text="Clear Settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_clear"
+        android:layout_columnSpan="2" />
+</GridLayout>

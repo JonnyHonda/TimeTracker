@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="5"
+    android:columnCount="3"
+    android:padding="5dp"
+    android:textAppearance="?android:attr/textAppearanceSmall">
+<!-- Row 1 -->
+    <TextView
+        android:id="@+id/lbl_title"
+        android:text="Kimai Settings"
+        android:layout_columnSpan="3"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal" />
+<!-- Row 2 -->
+    <TextView
+        android:id="@+id/lbl_url"
+        android:text="Url" />
+    <Space
+        android:layout_width="10dp" />
+    <EditText
+        android:id="@+id/edit_url"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        android:layout_gravity="fill_horizontal"
+        android:hint="https://kimai.tsgapis.com" />
+<!-- Row 3 -->
+    <TextView
+        android:id="@+id/lbl_username"
+        android:text="User name" />
+    <Space
+        android:layout_width="10dp" />
+    <EditText
+        android:id="@+id/edit_username"
+        android:layout_gravity="fill_horizontal"
+        android:hint="john.burrin" />
+<!-- Row 4 -->
+    <TextView
+        android:id="@+id/lbl_password"
+        android:text="Password" />
+    <Space
+        android:layout_width="10dp" />
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_gravity="fill_horizontal"
+        android:hint="***********" />
+<!-- Row 5 -->
+    <Button
+        android:id="@+id/btn_settings"
+        android:text="Save"
+        android:layout_columnSpan="3" />
+</GridLayout>
