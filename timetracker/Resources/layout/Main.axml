@@ -7,12 +7,12 @@
     android:padding="5dp"
     android:textAppearance="?android:attr/textAppearanceSmall">
     <TextView
-        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/apiUserNme"
-        android:layout_columnSpan="2" />
+        android:layout_columnSpan="2"
+        android:text="Current Active Recording Data" />
     <TextView
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"

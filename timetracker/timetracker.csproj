@@ -76,7 +76,6 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\values\colors.xml" />
     <AndroidResource Include="Resources\drawable\KimaiDroid.png" />
-    <AndroidResource Include="Resources\values\style.xml" />
     <AndroidResource Include="Resources\layout\Settings.axml" />
   </ItemGroup>
   <ItemGroup>

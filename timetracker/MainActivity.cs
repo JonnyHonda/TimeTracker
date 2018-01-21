@@ -69,13 +69,35 @@ namespace TimeTracker
             }
 
 
-            // Let's get the data for any current active recording
-            getActiveRecording(startbutton, stopbutton, strApiUrl, strApiKey);
+            // Let's get the data for any current active recording and update the start/stop button states
+            try
+            {
+                int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
+                if (countofRecodrings == 0)
+                {
+                    startbutton.Enabled = true;
+                    stopbutton.Enabled = false;
+                }
+                else
+                {
+                    startbutton.Enabled = false;
+                    stopbutton.Enabled = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
+                mesg.Show();
+            }
 
+            /**
+             * Start button onClick event, attempts to start a new recording and update the view
+            **/
             startbutton.Click += delegate
             {
 
-                try{
+                try
+                {
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
                     //Get details of the active recording
@@ -84,19 +106,25 @@ namespace TimeTracker
                     startbutton.Enabled = false;
                     stopbutton.Enabled = true;
                     // need to get the new active recording
-
-                }catch(Exception e){
-                    Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
-                    mesg.Show();
+                    try
+                    {
+                        int x = getActiveRecording(strApiUrl, strApiKey);
+                    }
+                    catch (Exception e)
+                    {
+                        throw (e);
+                    }
                 }
-               
-
-
-
+                catch (Exception e)
+                {
+                    throw (e);
+                }
             };
 
 
-
+            /**
+             * Stop button onClick event, attempts to stop the current recording and update the text view
+            **/
             stopbutton.Click += delegate
             {
                 try
@@ -108,37 +136,55 @@ namespace TimeTracker
                     stopbutton.Enabled = false;
                     //Get details of the active recording
                     object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
-                }catch(Exception e){
+                    // need to get the new active recording, incase it did not stop
+                    try
+                    {
+                        int x = getActiveRecording(strApiUrl, strApiKey);
+                    }
+                    catch (Exception e)
+                    {
+                        throw (e);
+                    }
+                }
+                catch (Exception e)
+                {
                     Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
                     mesg.Show();
                 }
             };
 
-
+            /** 
+                OnCLick event to Launch the settings activity
+            **/
             Button button = FindViewById<Button>(Resource.Id.btn_main);
-
             button.Click += delegate
             {
                 StartActivity(typeof(Settings));
             };
 
+            /** 
+                OnCLick event to clear then Shared Preferences, this function only clears the stored prefs
+            **/
             Button clearButton = FindViewById<Button>(Resource.Id.btn_clear);
-
             clearButton.Click += delegate
             {
                 ap.clearPrefs();
             };
         }
 
-        private void getActiveRecording(Button startbutton, Button stopbutton, string strApiUrl, string strApiKey)
+        /**
+         * Gets the currect active recording 
+         * 
+        */
+        int getActiveRecording(string lstrApiUrl, string lstrApiKey)
         {
             try
             {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(lstrApiUrl + "/core/soap.php");
                 Service.AllowAutoRedirect = true;
 
                 //Get details of the active recording
-                object responseObject = Service.getActiveRecording(strApiKey);
+                object responseObject = Service.getActiveRecording(lstrApiKey);
 
                 XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
 
@@ -147,77 +193,80 @@ namespace TimeTracker
                 recordingNodeXml = responseXml[2].SelectNodes("value/item/item");
                 //Loop through the selected Nodes.
                 TextView projectText = FindViewById<TextView>(Resource.Id.textView1);
-                if (recordingNodeXml.Count == 0)
-                {
-                    startbutton.Enabled = true;
-                    stopbutton.Enabled = false;
-                }
-                else
-                {
-                    startbutton.Enabled = false;
-                    stopbutton.Enabled = true;
-                }
 
                 // Populate the projectText TextView
                 currentProject(recordingNodeXml, projectText);
+                return recordingNodeXml.Count;
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                throw (e);
             }
         }
 
-        private void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
-        {
-            foreach (XmlNode node in recordingNodeXml)
-            {
-                //Fetch the Node and Attribute values.
-                switch (node["key"].InnerText)
-                {
-                    case "timeEntryId":
-                        //     projectText.Append((node["value"].InnerText));
-                        strEntryId = node["value"].InnerText;
-                        break;
-                    case "activityID":
-                        projectText.Append((node["value"].InnerText));
-                        projectText.Append(System.Environment.NewLine);
-                        strActivityID = node["value"].InnerText;
-                        break;
-                    case "projectID":
-                        projectText.Append((node["value"].InnerText));
-                        projectText.Append(System.Environment.NewLine);
-                        strProjectID = node["value"].InnerText;
-                        break;
-                    case "start":
-                        //     projectText.Append((node["value"].InnerText));
-                        break;
-                    case "end":
-                        //    projectText.Append((node["value"].InnerText));
-                        break;
-                    case "duration":
-                        projectText.Append((node["value"].InnerText));
-                        projectText.Append(System.Environment.NewLine);
-                        break;
-                    case "servertime":
-                        //   projectText.Append((node["value"].InnerText));
-                        break;
-                    case "customerID":
-                        //    projectText.Append((node["value"].InnerText));
-                        break;
-                    case "customerName":
-                        projectText.Append((node["value"].InnerText));
-                        projectText.Append(System.Environment.NewLine);
-                        break;
-                    case "projectName":
-                        projectText.Append((node["value"].InnerText));
-                        projectText.Append(System.Environment.NewLine);
-                        break;
-                    case "activityName":
-                        projectText.Append((node["value"].InnerText));
-                        break;
 
+        /**
+         * Takes an XML Node List and a TextView and populates it with the node list data
+         **/
+        void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
+        {
+            if (recordingNodeXml.Count > 0)
+            {
+                projectText.Text = "";
+                foreach (XmlNode node in recordingNodeXml)
+                {
+                    //Fetch the Node and Attribute values.
+                    switch (node["key"].InnerText)
+                    {
+                        case "timeEntryId":
+                            //     projectText.Append((node["value"].InnerText));
+                            strEntryId = node["value"].InnerText;
+                            break;
+                        case "activityID":
+                            // projectText.Append((node["value"].InnerText));
+                            // projectText.Append(System.Environment.NewLine);
+                            strActivityID = node["value"].InnerText;
+                            break;
+                        case "projectID":
+                            //projectText.Append((node["value"].InnerText));
+                            //projectText.Append(System.Environment.NewLine);
+                            strProjectID = node["value"].InnerText;
+                            break;
+                        case "start":
+                            //     projectText.Append((node["value"].InnerText));
+                            break;
+                        case "end":
+                            //    projectText.Append((node["value"].InnerText));
+                            break;
+                        case "duration":
+                            //projectText.Append((node["value"].InnerText));
+                            //projectText.Append(System.Environment.NewLine);
+                            break;
+                        case "servertime":
+                            //   projectText.Append((node["value"].InnerText));
+                            break;
+                        case "customerID":
+                            //    projectText.Append((node["value"].InnerText));
+                            break;
+                        case "customerName":
+                            projectText.Append((node["value"].InnerText));
+                            projectText.Append(System.Environment.NewLine);
+                            break;
+                        case "projectName":
+                            projectText.Append((node["value"].InnerText));
+                            projectText.Append(System.Environment.NewLine);
+                            break;
+                        case "activityName":
+                            projectText.Append((node["value"].InnerText));
+                            break;
+
+                    }
                 }
+            }
+            else
+            {
+                projectText.Text = "No Active Recording.";
             }
         }
     }
