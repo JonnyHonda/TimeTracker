@@ -5,6 +5,7 @@ using Android.Content;
 using TimeTracker.kimai.tsgapis.com;
 using System.Xml;
 using System;
+using System.Threading.Tasks;
 
 namespace TimeTracker
 {
@@ -17,6 +18,10 @@ namespace TimeTracker
         public bool startButtonState;
         public bool stopButtonState;
 
+        public TextView TimerViewer { get; private set; }
+        public bool RunUpdateLoopState = true;
+        public int DurationCount = 1;
+
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -24,6 +29,9 @@ namespace TimeTracker
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+            TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+
+            RunUpdateLoop();
             Button startbutton = FindViewById<Button>(Resource.Id.btn_start);
             Button stopbutton = FindViewById<Button>(Resource.Id.btn_stop);
             // Fetch App Prefs
@@ -75,12 +83,12 @@ namespace TimeTracker
                 int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
                 if (countofRecodrings == 0)
                 {
-                    startbutton.Enabled = true;
+                    startbutton.Enabled = true; RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
                 }
                 else
                 {
-                    startbutton.Enabled = false;
+                    startbutton.Enabled = false;RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
                 }
             }
@@ -103,7 +111,7 @@ namespace TimeTracker
                     //Get details of the active recording
                     object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
                     // toggle button states
-                    startbutton.Enabled = false;
+                    startbutton.Enabled = false;RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
                     // need to get the new active recording
                     try
@@ -132,7 +140,7 @@ namespace TimeTracker
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
                     // Toggle button status
-                    startbutton.Enabled = true;
+                    startbutton.Enabled = true;RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
                     //Get details of the active recording
                     object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
@@ -172,6 +180,16 @@ namespace TimeTracker
             };
         }
 
+
+        private async void RunUpdateLoop()
+        {
+           
+            while (RunUpdateLoopState)
+            {
+                await Task.Delay(1000);
+                TimerViewer.Text = string.Format("{0} ticks!", DurationCount++);
+            }
+        }
         /**
          * Gets the currect active recording 
          * 
@@ -242,6 +260,7 @@ namespace TimeTracker
                         case "duration":
                             //projectText.Append((node["value"].InnerText));
                             //projectText.Append(System.Environment.NewLine);
+                            DurationCount = Convert.ToInt16(node["value"].InnerText);
                             break;
                         case "servertime":
                             //   projectText.Append((node["value"].InnerText));
