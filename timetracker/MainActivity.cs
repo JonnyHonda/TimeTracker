@@ -18,9 +18,9 @@ namespace TimeTracker
         public bool startButtonState;
         public bool stopButtonState;
 
-        public TextView TimerViewer { get; private set; }
+        public TextView TimerViewer;
         public bool RunUpdateLoopState = true;
-        public int DurationCount = 1;
+        public UInt32 DurationCount = 1;
 
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
@@ -187,7 +187,17 @@ namespace TimeTracker
             while (RunUpdateLoopState)
             {
                 await Task.Delay(1000);
-                TimerViewer.Text = string.Format("{0} ticks!", DurationCount++);
+                TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
+
+                try
+                {
+                    string str = time.ToString(@"hh\:mm\:ss");
+                    TimerViewer.Text = str;
+                }
+                catch (Exception ex)
+                {
+                    TimerViewer.Text = "00:00:00";
+                }
             }
         }
         /**
@@ -253,6 +263,18 @@ namespace TimeTracker
                             break;
                         case "start":
                             //     projectText.Append((node["value"].InnerText));
+                            UInt32 StartTimeInUnixTime = Convert.ToUInt32(node["value"].InnerText);
+                            UInt32 TimeNowInUnixTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                            try
+                            {
+                                DurationCount = TimeNowInUnixTime - StartTimeInUnixTime;
+                            }
+                            catch (Exception ex)
+                            {
+                                Toast mesg = Toast.MakeText(this, ex.Message, ToastLength.Long);
+                                mesg.Show();
+                                DurationCount = 0;
+                            }
                             break;
                         case "end":
                             //    projectText.Append((node["value"].InnerText));
@@ -260,7 +282,7 @@ namespace TimeTracker
                         case "duration":
                             //projectText.Append((node["value"].InnerText));
                             //projectText.Append(System.Environment.NewLine);
-                            DurationCount = Convert.ToInt16(node["value"].InnerText);
+                            // DurationCount = Convert.ToInt16(node["value"].InnerText);
                             break;
                         case "servertime":
                             //   projectText.Append((node["value"].InnerText));
