@@ -3,12 +3,21 @@ using SQLite;
 
 namespace TimeTracker
 {
+    /// <summary>
+    /// Kimai datadase.
+    /// </summary>
     public class KimaiDatadase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:TimeTracker.KimaiDatadase"/> class.
+        /// </summary>
         public KimaiDatadase()
         {
         }
        
+        /// <summary>
+        /// Customer.
+        /// </summary>
         public class Customer
         {
             [PrimaryKey][Unique]
@@ -21,6 +30,9 @@ namespace TimeTracker
             }
         }
 
+        /// <summary>
+        /// Project.
+        /// </summary>
         public class Project
         {
             [PrimaryKey]
@@ -35,6 +47,9 @@ namespace TimeTracker
             }
         }
 
+        /// <summary>
+        /// Project activity.
+        /// </summary>
         public class ProjectActivity
         {
             [PrimaryKey]

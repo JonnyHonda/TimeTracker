@@ -264,6 +264,15 @@ namespace TimeTracker
                 ap.clearPrefs();
             };
         }
+
+
+
+        /// <summary>
+        /// Populates the customer table.
+        /// </summary>
+        /// <param name="strApiUrl">String API URL.</param>
+        /// <param name="strApiKey">String API key.</param>
+        /// <param name="db">Db.</param>
         private static void populateCustomerTable(string strApiUrl, string strApiKey, SQLiteConnection db)
         {
             try
@@ -308,16 +317,13 @@ namespace TimeTracker
         }
 
 
-        /**********
-         *//// <summary>
-         /// /
-         /// </summary>
-         /// <param name="strApiUrl">String API URL.</param>
-         /// <param name="strApiKey">String API key.</param>
-         /// <param name="db">Db.</param>
-        /// 
-        /// A lot of this stuff needs rewriting
-        /// */
+
+        /// <summary>
+        /// Populates the activity table.
+        /// </summary>
+        /// <param name="strApiUrl">String API URL.</param>
+        /// <param name="strApiKey">String API key.</param>
+        /// <param name="db">Db.</param>
         private static void populateActivityTable(string strApiUrl, string strApiKey, SQLiteConnection db)
         {
             try
@@ -370,6 +376,14 @@ namespace TimeTracker
             }
         }
 
+
+
+        /// <summary>
+        /// Populates the project table.
+        /// </summary>
+        /// <param name="strApiUrl">String API URL.</param>
+        /// <param name="strApiKey">String API key.</param>
+        /// <param name="db">Db.</param>
         private static void populateProjectTable(string strApiUrl, string strApiKey, SQLiteConnection db)
         {
             try
@@ -416,6 +430,11 @@ namespace TimeTracker
             }
         }
 
+
+
+        /// <summary>
+        /// Runs the update loop.
+        /// </summary>
         private async void RunUpdateLoop()
         {
 
@@ -438,10 +457,13 @@ namespace TimeTracker
                 }
             }
         }
-        /**
-         * Gets the currect active recording 
-         * 
-        */
+
+        /// <summary>
+        /// Gets the active recording.
+        /// </summary>
+        /// <returns>The active recording.</returns>
+        /// <param name="lstrApiUrl">Lstr API URL.</param>
+        /// <param name="lstrApiKey">Lstr API key.</param>
         int getActiveRecording(string lstrApiUrl, string lstrApiKey)
         {
             try
@@ -472,9 +494,11 @@ namespace TimeTracker
         }
 
 
-        /**
-         * Takes an XML Node List and a TextView and populates it with the node list data
-         **/
+        /// <summary>
+        /// Currents the project.
+        /// </summary>
+        /// <param name="recordingNodeXml">Recording node xml.</param>
+        /// <param name="projectText">Project text.</param>
         void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
         {
             if (recordingNodeXml.Count > 0)
