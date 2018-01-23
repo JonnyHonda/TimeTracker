@@ -41,10 +41,10 @@ namespace TimeTracker
             [Unique]
             public int ID { get; set; }
             public string Name { get; set; }
-            public int CustomerID { get; set; }
+            public int ProjectID { get; set; }
             public override string ToString()
             {
-                return string.Format("[Project: ID={0},CustomerID{1}, Name={2}]", ID, CustomerID, Name);
+                return string.Format("[Project: ID={0},Project{1}, Name={2}]", ID, ProjectID, Name);
             }
         }
     }

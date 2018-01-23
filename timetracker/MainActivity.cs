@@ -125,6 +125,8 @@ namespace TimeTracker
             }
             Activities.Adapter = activityadapter;
 
+
+
             // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
             if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
             {
@@ -311,31 +313,43 @@ namespace TimeTracker
                 Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                 Service.AllowAutoRedirect = true;
 
+
+                // Get a list of project id's from the database
+
+                var projects = db.Table<Project>();
+
+                foreach (var project in projects)
+                {
                 //Get details of the active recording
-                object responseObject = Service.getTasks(strApiKey,5);
+                    object responseObject = Service.getTasks(strApiKey,project.ID);
 
                 XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
 
                 XmlNodeList activityNodeXml;
 
-                activityNodeXml = responseXml[2].SelectNodes("value/item/item");
+                activityNodeXml = responseXml[2].SelectNodes("value/item");
                 var newActivity = new ProjectActivity();
-                foreach (XmlNode node in activityNodeXml)
-                {
-                    //Fetch the Node and Attribute values.
-
-                        switch (node["key"].InnerText)
+                    foreach (XmlNode node in activityNodeXml)
+                    {
+                        //Fetch the Node and Attribute values.
+                        XmlNodeList lns;
+                        lns = node.SelectNodes("item");
+                        foreach (XmlNode n in lns)
                         {
-                            case "name":
-                                newActivity.Name = node["value"].InnerText;
-                                break;
-                            case "customerID":
-                                newActivity.CustomerID = Convert.ToInt16(node["value"].InnerText);
-                                break;
+                            switch (n["key"].InnerText)
+                            {
+                                case "name":
+                                    newActivity.Name = n["value"].InnerText;
+                                    break;
+                                case "activityID":
+                                    newActivity.ID = Convert.ToInt16(n["value"].InnerText);
+                                    newActivity.ProjectID= project.ID;
+                                    break;
+                                                            }
                         }
-                    
-                    db.Insert(newActivity);
+                        db.Insert(newActivity);
 
+                    }
                 }
             }
             catch
