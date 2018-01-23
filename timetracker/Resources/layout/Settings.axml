@@ -43,6 +43,7 @@
         android:layout_width="10dp" />
     <EditText
         android:id="@+id/edit_password"
+        android:inputType="textPassword"
         android:layout_gravity="fill_horizontal"
         android:hint="***********" />
 <!-- Row 5 -->

@@ -100,8 +100,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f070005
 			public const int btn_main = 2131165189;
 			
-			// aapt resource value: 0x7f07000e
-			public const int btn_settings = 2131165198;
+			// aapt resource value: 0x7f07000f
+			public const int btn_settings = 2131165199;
 			
 			// aapt resource value: 0x7f070003
 			public const int btn_start = 2131165187;
@@ -109,29 +109,32 @@ namespace TimeTracker
 			// aapt resource value: 0x7f070004
 			public const int btn_stop = 2131165188;
 			
-			// aapt resource value: 0x7f07000d
-			public const int edit_password = 2131165197;
-			
-			// aapt resource value: 0x7f070009
-			public const int edit_url = 2131165193;
-			
-			// aapt resource value: 0x7f07000b
-			public const int edit_username = 2131165195;
-			
-			// aapt resource value: 0x7f07000c
-			public const int lbl_password = 2131165196;
-			
-			// aapt resource value: 0x7f070007
-			public const int lbl_title = 2131165191;
-			
-			// aapt resource value: 0x7f070008
-			public const int lbl_url = 2131165192;
+			// aapt resource value: 0x7f07000e
+			public const int edit_password = 2131165198;
 			
 			// aapt resource value: 0x7f07000a
-			public const int lbl_username = 2131165194;
+			public const int edit_url = 2131165194;
+			
+			// aapt resource value: 0x7f07000c
+			public const int edit_username = 2131165196;
+			
+			// aapt resource value: 0x7f07000d
+			public const int lbl_password = 2131165197;
+			
+			// aapt resource value: 0x7f070008
+			public const int lbl_title = 2131165192;
+			
+			// aapt resource value: 0x7f070009
+			public const int lbl_url = 2131165193;
+			
+			// aapt resource value: 0x7f07000b
+			public const int lbl_username = 2131165195;
 			
 			// aapt resource value: 0x7f070001
 			public const int textView1 = 2131165185;
+			
+			// aapt resource value: 0x7f070007
+			public const int textView2 = 2131165191;
 			
 			static Id()
 			{

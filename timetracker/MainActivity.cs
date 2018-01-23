@@ -19,6 +19,7 @@ namespace TimeTracker
         public bool stopButtonState;
 
         public TextView TimerViewer;
+        public TextView Tv2;
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
 
@@ -48,7 +49,7 @@ namespace TimeTracker
                 StartActivity(typeof(Settings));
             }
 
-            // Do we have a apikey to make a calll, if not login fetch a key and store it in the local prefs
+            // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
             if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
             {
                 // No apiKey stored so we'll need to log in
@@ -85,11 +86,13 @@ namespace TimeTracker
                 {
                     startbutton.Enabled = true; RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2);Tv2.Text = RunUpdateLoopState.ToString();
                 }
                 else
                 {
                     startbutton.Enabled = false;RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                 }
             }
             catch (Exception e)
@@ -111,8 +114,9 @@ namespace TimeTracker
                     //Get details of the active recording
                     object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
                     // toggle button states
-                    startbutton.Enabled = false;RunUpdateLoopState = true;
+                    startbutton.Enabled = false; RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     // need to get the new active recording
                     try
                     {
@@ -140,10 +144,13 @@ namespace TimeTracker
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
                     // Toggle button status
-                    startbutton.Enabled = true;RunUpdateLoopState = false;
+                    startbutton.Enabled = true; RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
                     //Get details of the active recording
                     object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
+
                     // need to get the new active recording, incase it did not stop
                     try
                     {
@@ -183,20 +190,23 @@ namespace TimeTracker
 
         private async void RunUpdateLoop()
         {
-           
-            while (RunUpdateLoopState)
+
+            while (true)
             {
                 await Task.Delay(1000);
                 TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
-
-                try
+                if (RunUpdateLoopState)
                 {
-                    string str = time.ToString(@"hh\:mm\:ss");
-                    TimerViewer.Text = str;
-                }
-                catch (Exception ex)
-                {
-                    TimerViewer.Text = "00:00:00";
+                    try
+                    {
+                        string str = time.ToString(@"hh\:mm\:ss");
+                        TimerViewer.Text = str;
+                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
+                    }
+                    catch (Exception ex)
+                    {
+                        TimerViewer.Text = "00:00:00";
+                    }
                 }
             }
         }
@@ -241,6 +251,7 @@ namespace TimeTracker
         {
             if (recordingNodeXml.Count > 0)
             {
+                //TimerViewer.Text = "00:00:00";
                 projectText.Text = "";
                 foreach (XmlNode node in recordingNodeXml)
                 {
@@ -291,14 +302,17 @@ namespace TimeTracker
                             //    projectText.Append((node["value"].InnerText));
                             break;
                         case "customerName":
+                            projectText.Append("Customer: ");
                             projectText.Append((node["value"].InnerText));
                             projectText.Append(System.Environment.NewLine);
                             break;
                         case "projectName":
+                            projectText.Append("Project: ");
                             projectText.Append((node["value"].InnerText));
                             projectText.Append(System.Environment.NewLine);
                             break;
                         case "activityName":
+                            projectText.Append("Activity:");
                             projectText.Append((node["value"].InnerText));
                             break;
 
@@ -308,6 +322,8 @@ namespace TimeTracker
             else
             {
                 projectText.Text = "No Active Recording.";
+                TimerViewer.Text = "00:00:00";
+               
             }
         }
     }
