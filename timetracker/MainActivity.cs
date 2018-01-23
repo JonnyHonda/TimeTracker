@@ -306,6 +306,18 @@ namespace TimeTracker
 
             }
         }
+
+
+        /**********
+         *//// <summary>
+         /// /
+         /// </summary>
+         /// <param name="strApiUrl">String API URL.</param>
+         /// <param name="strApiKey">String API key.</param>
+         /// <param name="db">Db.</param>
+        /// 
+        /// A lot of this stuff needs rewriting
+        /// */
         private static void populateActivityTable(string strApiUrl, string strApiKey, SQLiteConnection db)
         {
             try
