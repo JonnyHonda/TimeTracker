@@ -47,15 +47,16 @@ namespace TimeTracker
 
                 try
                 {
+                    char[] charsToTrim = { '*', ' ', '\'' };
                     TextView url = FindViewById<TextView>(Resource.Id.edit_url);
-                    ap.saveAccessKey("URL", url.Text,true);
+                    ap.saveAccessKey("URL", url.Text.Trim(charsToTrim),true);
 
                     TextView username = FindViewById<TextView>(Resource.Id.edit_username);
-                    ap.saveAccessKey("USERNAME", username.Text,true);
+                    ap.saveAccessKey("USERNAME", username.Text.Trim(charsToTrim),true);
 
 
                     TextView password = FindViewById<TextView>(Resource.Id.edit_password);
-                    ap.saveAccessKey("PASSWORD", password.Text,true);
+                    ap.saveAccessKey("PASSWORD", password.Text.Trim(charsToTrim),true);
 
                     StartActivity(new Intent(Application.Context, typeof(MainActivity)));
 
