@@ -81,7 +81,6 @@ namespace TimeTracker
                 }
             }
 
-            Console.WriteLine("Creating database, if it doesn't already exist");
             string dbPath = System.IO.Path.Combine(
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                  "localkimaidata.db3");
@@ -165,18 +164,18 @@ namespace TimeTracker
             // Let's get the data for any current active recording and update the start/stop button states
             try
             {
-                int countofRecordings = getActiveRecording(strApiUrl, strApiKey);
-                if (countofRecordings == 0)
+                int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
+                if (countofRecodrings == 0)
                 {
                     startbutton.Enabled = true; RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); //Tv2.Text = RunUpdateLoopState.ToString();
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                 }
                 else
                 {
                     startbutton.Enabled = false; RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); //Tv2.Text = RunUpdateLoopState.ToString();
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                 }
             }
             catch (Exception e)
@@ -200,7 +199,7 @@ namespace TimeTracker
                     // toggle button states
                     startbutton.Enabled = false; RunUpdateLoopState = true;
                     stopbutton.Enabled = true;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); //Tv2.Text = RunUpdateLoopState.ToString();
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     // need to get the new active recording
                     try
                     {
@@ -230,7 +229,7 @@ namespace TimeTracker
                     // Toggle button status
                     startbutton.Enabled = true; RunUpdateLoopState = false;
                     stopbutton.Enabled = false;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2);// Tv2.Text = RunUpdateLoopState.ToString();
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
 
                     //Get details of the active recording
                     object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
@@ -451,18 +450,11 @@ namespace TimeTracker
                 if (RunUpdateLoopState)
                 {
                    
-                        string str = time.ToString(@"hh\:mm\:ss");
+                    string str = time.ToString(@"hh\:mm\:ss");
                         TimerViewer.Text = str;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
-
                 }else{
                     TimerViewer.Text = "00:00:00";
-
-                    }
-                    catch (Exception ex)
-                    {
-                        TimerViewer.Text = "00:00:00";
-                        throw (ex);
                 }
             }
         }
