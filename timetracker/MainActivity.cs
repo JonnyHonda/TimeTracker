@@ -316,9 +316,9 @@ namespace TimeTracker
 
                 }
             }
-            catch
+            catch(Exception e)
             {
-
+                throw (e);
             }
         }
 
@@ -376,9 +376,9 @@ namespace TimeTracker
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-
+                throw (e);
             }
         }
 
@@ -430,9 +430,9 @@ namespace TimeTracker
 
                 }
             }
-            catch
+            catch(Exception e)
             {
-
+                throw (e);
             }
         }
 
@@ -450,16 +450,12 @@ namespace TimeTracker
                 TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
                 if (RunUpdateLoopState)
                 {
-                    try
-                    {
+                   
                         string str = time.ToString(@"hh\:mm\:ss");
                         TimerViewer.Text = str;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
-                    }
-                    catch (Exception ex)
-                    {
-                        TimerViewer.Text = "00:00:00";
-                    }
+                }else{
+                    TimerViewer.Text = "00:00:00";
                 }
             }
         }
