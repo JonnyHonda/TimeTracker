@@ -14,6 +14,7 @@ namespace TimeTracker
     [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
+        public bool debug = false;
         public string strEntryId;
         public string strProjectID;
         public string strActivityID;
@@ -67,7 +68,10 @@ namespace TimeTracker
              *////////////////////////////////////////////
             db.CreateTable<Customer>();
             // Tempary Delete all while testing
-            db.DeleteAll<Customer>();
+            if (debug)
+            {
+                db.DeleteAll<Customer>();
+            }
             if (db.Table<Customer>().Count() == 0)
             {
                 populateCustomerTable(strApiUrl, strApiKey, db);
@@ -89,7 +93,10 @@ namespace TimeTracker
              *////////////////////////////////////////////
             db.CreateTable<Project>();
             // Tempary Delete all while testing
-            db.DeleteAll<Project>();
+            if (debug)
+            {
+                db.DeleteAll<Project>();
+            }
             if (db.Table<Project>().Count() == 0)
             {
                 populateProjectTable(strApiUrl, strApiKey, db);
@@ -111,7 +118,10 @@ namespace TimeTracker
 
             db.CreateTable<ProjectActivity>();
             // Tempary Delete all while testing
-            db.DeleteAll<ProjectActivity>();
+            if (debug)
+            {
+                db.DeleteAll<ProjectActivity>();
+            }
             if (db.Table<ProjectActivity>().Count() == 0)
             {
                        populateActivityTable(strApiUrl, strApiKey, db);
