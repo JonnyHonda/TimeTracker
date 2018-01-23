@@ -53,7 +53,33 @@ namespace TimeTracker
                 StartActivity(typeof(Settings));
             }
 
+            // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
+            if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
+            {
+                // No apiKey stored so we'll need to log in
+                try
+                {
+                    // Connect to the Soap Service here for Auth
+                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                    Service.AllowAutoRedirect = true;
+                    // Get the api key by logging in
+                    object responseObject = Service.authenticate(strApiUserName, strApiPassword);
 
+                    // Create an XML Node and cast the response object to it.
+                    XmlNode[] responseXml;
+                    responseXml = (System.Xml.XmlNode[])responseObject;
+
+                    // fetech the abcolute position of the api key
+                    XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
+                    strApiKey = apiNode.InnerXml;
+                    ap.saveAccessKey("APIKEY", strApiKey, true);
+                }
+                catch (Exception e)
+                {
+                    Toast welcome = Toast.MakeText(this, e.Message, ToastLength.Long);
+                    welcome.Show();
+                }
+            }
 
             Console.WriteLine("Creating database, if it doesn't already exist");
             string dbPath = System.IO.Path.Combine(
@@ -134,36 +160,6 @@ namespace TimeTracker
                 activityadapter.Add(activity.Name);
             }
             Activities.Adapter = activityadapter;
-
-
-
-            // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
-            if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
-            {
-                // No apiKey stored so we'll need to log in
-                try
-                {
-                    // Connect to the Soap Service here for Auth
-                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                    Service.AllowAutoRedirect = true;
-                    // Get the api key by logging in
-                    object responseObject = Service.authenticate(strApiUserName, strApiPassword);
-
-                    // Create an XML Node and cast the response object to it.
-                    XmlNode[] responseXml;
-                    responseXml = (System.Xml.XmlNode[])responseObject;
-
-                    // fetech the abcolute position of the api key
-                    XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
-                    strApiKey = apiNode.InnerXml;
-                    ap.saveAccessKey("APIKEY", strApiKey, true);
-                }
-                catch (Exception e)
-                {
-                    Toast welcome = Toast.MakeText(this, e.Message, ToastLength.Long);
-                    welcome.Show();
-                }
-            }
 
 
             // Let's get the data for any current active recording and update the start/stop button states
