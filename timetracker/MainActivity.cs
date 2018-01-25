@@ -11,10 +11,10 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "TimeTracker", MainLauncher = false, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        public bool debug = false;
+        public bool debug = true;
         public string strEntryId;
         public string strProjectID;
         public string strActivityID;
@@ -48,200 +48,112 @@ namespace TimeTracker
             string strApiKey = ap.getAccessKey("APIKEY");
 
             // Looks like we don't have any setting stored so we need to go to the Setting Page
-            if (string.IsNullOrEmpty(strApiUrl))
+            if (string.IsNullOrEmpty(strApiUrl) || debug)
             {
                 StartActivity(typeof(Settings));
             }
-
-            // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
-            if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
+            else
             {
-                // No apiKey stored so we'll need to log in
-                try
+
+                // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
+                if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
                 {
-                    // Connect to the Soap Service here for Auth
-                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                    Service.AllowAutoRedirect = true;
-                    // Get the api key by logging in
-                    object responseObject = Service.authenticate(strApiUserName, strApiPassword);
-
-                    // Create an XML Node and cast the response object to it.
-                    XmlNode[] responseXml;
-                    responseXml = (System.Xml.XmlNode[])responseObject;
-
-                    // fetech the abcolute position of the api key
-                    XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
-                    strApiKey = apiNode.InnerXml;
-                    ap.saveAccessKey("APIKEY", strApiKey, true);
-                }
-                catch (Exception e)
-                {
-                    Toast welcome = Toast.MakeText(this, e.Message, ToastLength.Long);
-                    welcome.Show();
-                }
-            }
-
-            string dbPath = System.IO.Path.Combine(
-                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                 "localkimaidata.db3");
-            var db = new SQLiteConnection(dbPath);
-
-            /********************************************
-             * 
-             * Store Customers in DB and populate Spinner
-             * 
-             *////////////////////////////////////////////
-            db.CreateTable<Customer>();
-            // Tempary Delete all while testing
-            if (debug)
-            {
-                db.DeleteAll<Customer>();
-            }
-            if (db.Table<Customer>().Count() == 0)
-            {
-                populateCustomerTable(strApiUrl, strApiKey, db);
-            }
-
-            Spinner Customers = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
-            var customers = db.Table<Customer>();
-            var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-            foreach (var customer in customers)
-            {
-                customeradapter.Add(customer.Name);
-            }
-            Customers.Adapter = customeradapter;
-
-            /********************************************
-             * 
-             * Store Projects in DB and populate Spinner
-             * 
-             *////////////////////////////////////////////
-            db.CreateTable<Project>();
-            // Tempary Delete all while testing
-            if (debug)
-            {
-                db.DeleteAll<Project>();
-            }
-            if (db.Table<Project>().Count() == 0)
-            {
-                populateProjectTable(strApiUrl, strApiKey, db);
-            }
-            Spinner Projects = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-            var projects = db.Table<Project>();
-            var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-            foreach (var project in projects)
-            {
-                projectadapter.Add(project.Name);
-            }
-            Projects.Adapter = projectadapter;
-
-            /********************************************
-             * 
-             * Store Activities in DB and populate Spinner
-             * 
-             *////////////////////////////////////////////
-
-            db.CreateTable<ProjectActivity>();
-            // Tempary Delete all while testing
-            if (debug)
-            {
-                db.DeleteAll<ProjectActivity>();
-            }
-            if (db.Table<ProjectActivity>().Count() == 0)
-            {
-                       populateActivityTable(strApiUrl, strApiKey, db);
-            }
-            Spinner Activities = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-            var activities = db.Table<ProjectActivity>();
-            var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-            foreach (var activity in activities)
-            {
-                activityadapter.Add(activity.Name);
-            }
-            Activities.Adapter = activityadapter;
-
-
-            // Let's get the data for any current active recording and update the start/stop button states
-            try
-            {
-                int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
-                if (countofRecodrings == 0)
-                {
-                    startbutton.Enabled = true; RunUpdateLoopState = false;
-                    stopbutton.Enabled = false;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                }
-                else
-                {
-                    startbutton.Enabled = false; RunUpdateLoopState = true;
-                    stopbutton.Enabled = true;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                }
-            }
-            catch (Exception e)
-            {
-                Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
-                mesg.Show();
-            }
-
-            /**
-             * Start button onClick event, attempts to start a new recording and update the view
-            **/
-            startbutton.Click += delegate
-            {
-
-                try
-                {
-                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                    Service.AllowAutoRedirect = true;
-                    //Get details of the active recording
-                    object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
-                    // toggle button states
-                    startbutton.Enabled = false; RunUpdateLoopState = true;
-                    stopbutton.Enabled = true;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                    // need to get the new active recording
+                    // No apiKey stored so we'll need to log in
                     try
                     {
-                        int x = getActiveRecording(strApiUrl, strApiKey);
+                        // Connect to the Soap Service here for Auth
+                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                        Service.AllowAutoRedirect = true;
+                        // Get the api key by logging in
+                        object responseObject = Service.authenticate(strApiUserName, strApiPassword);
+
+                        // Create an XML Node and cast the response object to it.
+                        XmlNode[] responseXml;
+                        responseXml = (System.Xml.XmlNode[])responseObject;
+
+                        // fetech the abcolute position of the api key
+                        XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
+                        strApiKey = apiNode.InnerXml;
+                        ap.saveAccessKey("APIKEY", strApiKey, true);
                     }
                     catch (Exception e)
                     {
-                        throw (e);
+                        Toast welcome = Toast.MakeText(this, e.Message, ToastLength.Long);
+                        welcome.Show();
                     }
                 }
-                catch (Exception e)
+
+                string dbPath = System.IO.Path.Combine(
+                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                     "localkimaidata.db3");
+                var db = new SQLiteConnection(dbPath);
+
+                /********************************************
+                 * 
+                 * Store Customers in DB and populate Spinner
+                 * 
+                 *////////////////////////////////////////////
+                Spinner Customers = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
+                var customers = db.Table<Customer>();
+                if (db.Table<Customer>().Count() > 0)
                 {
-                    throw (e);
+                    var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var customer in customers)
+                    {
+                        customeradapter.Add(customer.Name);
+                    }
+                    Customers.Adapter = customeradapter;
                 }
-            };
 
+                /********************************************
+                 * 
+                 * Store Projects in DB and populate Spinner
+                 * 
+                 *////////////////////////////////////////////
+                Spinner Projects = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+                var projects = db.Table<Project>();
+                if (db.Table<Project>().Count() > 0)
+                {
+                    var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var project in projects)
+                    {
+                        projectadapter.Add(project.Name);
+                    }
+                    Projects.Adapter = projectadapter;
+                }
 
-            /**
-             * Stop button onClick event, attempts to stop the current recording and update the text view
-            **/
-            stopbutton.Click += delegate
-            {
+                /********************************************
+                 * 
+                 * Store Activities in DB and populate Spinner
+                 * 
+                 *////////////////////////////////////////////
+                Spinner Activities = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+                var activities = db.Table<ProjectActivity>();
+                if (db.Table<ProjectActivity>().Count() > 0)
+                {
+                    var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var activity in activities)
+                    {
+                        activityadapter.Add(activity.Name);
+                    }
+                    Activities.Adapter = activityadapter;
+                }
+
+                // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
-                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                    Service.AllowAutoRedirect = true;
-                    // Toggle button status
-                    startbutton.Enabled = true; RunUpdateLoopState = false;
-                    stopbutton.Enabled = false;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                    //Get details of the active recording
-                    object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
-
-                    // need to get the new active recording, incase it did not stop
-                    try
+                    int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
+                    if (countofRecodrings == 0)
                     {
-                        int x = getActiveRecording(strApiUrl, strApiKey);
+                        startbutton.Enabled = true; RunUpdateLoopState = false;
+                        stopbutton.Enabled = false;
+                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
-                    catch (Exception e)
+                    else
                     {
-                        throw (e);
+                        startbutton.Enabled = false; RunUpdateLoopState = true;
+                        stopbutton.Enabled = true;
+                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
                 }
                 catch (Exception e)
@@ -249,190 +161,93 @@ namespace TimeTracker
                     Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
                     mesg.Show();
                 }
-            };
 
-            /** 
-                OnCLick event to Launch the settings activity
-            **/
-            Button button = FindViewById<Button>(Resource.Id.btn_main);
-            button.Click += delegate
-            {
-                StartActivity(typeof(Settings));
-            };
-
-            /** 
-                OnCLick event to clear then Shared Preferences, this function only clears the stored prefs
-            **/
-            Button clearButton = FindViewById<Button>(Resource.Id.btn_clear);
-            clearButton.Click += delegate
-            {
-                ap.clearPrefs();
-            };
-        }
-
-
-
-        /// <summary>
-        /// Populates the customer table.
-        /// </summary>
-        /// <param name="strApiUrl">String API URL.</param>
-        /// <param name="strApiKey">String API key.</param>
-        /// <param name="db">Db.</param>
-        private static void populateCustomerTable(string strApiUrl, string strApiKey, SQLiteConnection db)
-        {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-
-                //Get details of the active recording
-                object responseObject = Service.getCustomers(strApiKey);
-
-                XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
-
-                XmlNodeList customerNodeXml;
-
-                customerNodeXml = responseXml[2].SelectNodes("value/item");
-                var newCustomer = new Customer();
-                foreach (XmlNode node in customerNodeXml)
+                /**
+                 * Start button onClick event, attempts to start a new recording and update the view
+                **/
+                startbutton.Click += delegate
                 {
-                    //Fetch the Node and Attribute values.
-                    XmlNodeList lns;
-                    lns = node.SelectNodes("item");
-                    foreach (XmlNode n in lns)
+
+                    try
                     {
-                        switch (n["key"].InnerText)
+                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                        Service.AllowAutoRedirect = true;
+                    //Get details of the active recording
+                    object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
+                    // toggle button states
+                    startbutton.Enabled = false; RunUpdateLoopState = true;
+                        stopbutton.Enabled = true;
+                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+                    // need to get the new active recording
+                    try
                         {
-                            case "name":
-                                newCustomer.Name = n["value"].InnerText;
-                                break;
-                            case "customerID":
-                                newCustomer.ID = Convert.ToInt16(n["value"].InnerText);
-                                break;
+                            int x = getActiveRecording(strApiUrl, strApiKey);
+                        }
+                        catch (Exception e)
+                        {
+                            throw (e);
                         }
                     }
-                    db.Insert(newCustomer);
-
-                }
-            }
-            catch(Exception e)
-            {
-                throw (e);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Populates the activity table.
-        /// </summary>
-        /// <param name="strApiUrl">String API URL.</param>
-        /// <param name="strApiKey">String API key.</param>
-        /// <param name="db">Db.</param>
-        private static void populateActivityTable(string strApiUrl, string strApiKey, SQLiteConnection db)
-        {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-
-
-                // Get a list of project id's from the database
-
-                var projects = db.Table<Project>();
-
-                foreach (var project in projects)
-                {
-                //Get details of the active recording
-                    object responseObject = Service.getTasks(strApiKey,project.ID);
-
-                XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
-
-                XmlNodeList activityNodeXml;
-
-                activityNodeXml = responseXml[2].SelectNodes("value/item");
-                var newActivity = new ProjectActivity();
-                    foreach (XmlNode node in activityNodeXml)
+                    catch (Exception e)
                     {
-                        //Fetch the Node and Attribute values.
-                        XmlNodeList lns;
-                        lns = node.SelectNodes("item");
-                        foreach (XmlNode n in lns)
-                        {
-                            switch (n["key"].InnerText)
-                            {
-                                case "name":
-                                    newActivity.Name = n["value"].InnerText;
-                                    break;
-                                case "activityID":
-                                    newActivity.ID = Convert.ToInt16(n["value"].InnerText);
-                                    newActivity.ProjectID= project.ID;
-                                    break;
-                                                            }
-                        }
-                        db.Insert(newActivity);
-
+                        throw (e);
                     }
-                }
-            }
-            catch (Exception e)
-            {
-                throw (e);
-            }
-        }
+                };
 
 
-
-        /// <summary>
-        /// Populates the project table.
-        /// </summary>
-        /// <param name="strApiUrl">String API URL.</param>
-        /// <param name="strApiKey">String API key.</param>
-        /// <param name="db">Db.</param>
-        private static void populateProjectTable(string strApiUrl, string strApiKey, SQLiteConnection db)
-        {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-
-                //Get details of the active recording
-                object responseObject = Service.getProjects(strApiKey, false);
-
-                XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
-
-                XmlNodeList projectNodeXml;
-
-                projectNodeXml = responseXml[2].SelectNodes("value/item");
-                var newProject = new Project();
-                foreach (XmlNode node in projectNodeXml)
+                /**
+                 * Stop button onClick event, attempts to stop the current recording and update the text view
+                **/
+                stopbutton.Click += delegate
                 {
-                    //Fetch the Node and Attribute values.
-                    XmlNodeList lns;
-                    lns = node.SelectNodes("item");
-                    foreach (XmlNode n in lns)
+                    try
                     {
-                        switch (n["key"].InnerText)
+                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                        Service.AllowAutoRedirect = true;
+                    // Toggle button status
+                    startbutton.Enabled = true; RunUpdateLoopState = false;
+                        stopbutton.Enabled = false;
+                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                    //Get details of the active recording
+                    object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
+
+                    // need to get the new active recording, incase it did not stop
+                    try
                         {
-                            case "name":
-                                newProject.Name = n["value"].InnerText;
-                                break;
-                            case "projectID":
-                                newProject.ID = Convert.ToInt16(n["value"].InnerText);
-                                break;
-                            case "customerID":
-                                newProject.CustomerID = Convert.ToInt16(n["value"].InnerText);
-                                break;
+                            int x = getActiveRecording(strApiUrl, strApiKey);
+                        }
+                        catch (Exception e)
+                        {
+                            throw (e);
                         }
                     }
-                    db.Insert(newProject);
+                    catch (Exception e)
+                    {
+                        Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
+                        mesg.Show();
+                    }
+                };
 
-                }
+                /** 
+                    OnCLick event to Launch the settings activity
+                **/
+                Button button = FindViewById<Button>(Resource.Id.btn_main);
+                button.Click += delegate
+                {
+                    StartActivity(typeof(Settings));
+                };
+
+                /** 
+                    OnCLick event to clear then Shared Preferences, this function only clears the stored prefs
+                **/
+                Button clearButton = FindViewById<Button>(Resource.Id.btn_clear);
+                clearButton.Click += delegate
+                {
+                    ap.clearPrefs();
+                };
             }
-            catch(Exception e)
-            {
-                throw (e);
-            }
+
         }
 
 

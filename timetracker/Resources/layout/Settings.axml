@@ -50,5 +50,13 @@
     <Button
         android:id="@+id/btn_settings"
         android:text="Save"
+        android:layout_columnSpan="1" />
+    <Button
+        android:id="@+id/btn_cancel"
+        android:text="Cancel"
+        android:layout_columnSpan="2" />
+    <Button
+        android:id="@+id/btn_view_data"
+        android:text="View Sqlite Data"
         android:layout_columnSpan="3" />
 </GridLayout>

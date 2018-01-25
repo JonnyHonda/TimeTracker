@@ -73,6 +73,7 @@
     <Compile Include="Preferences.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="KimaiDatabase.cs" />
+    <Compile Include="SqliteActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -95,6 +96,7 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\drawable\KimaiDroid.png" />
     <AndroidResource Include="Resources\layout\Settings.axml" />
+    <AndroidResource Include="Resources\layout\SqlLayout.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
