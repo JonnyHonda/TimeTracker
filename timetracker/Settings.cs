@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,10 +18,12 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "Settings", MainLauncher = true)]
+    [Activity(Label = "Settings", MainLauncher = false)]
     public class Settings : Activity
     {
         public bool debug = false;
+        public bool HoldState = true;
+        public int HoldDuration = 10;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -43,7 +46,8 @@ namespace TimeTracker
             // and attach an event to it
             // Save the Settings
             Button save_button = FindViewById<Button>(Resource.Id.btn_settings);
-
+            Button cancel_button = FindViewById<Button>(Resource.Id.btn_cancel);
+       
             string dbPath = System.IO.Path.Combine(
                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                 "localkimaidata.db3");
@@ -53,21 +57,6 @@ namespace TimeTracker
             string strApiUserName = ap.getAccessKey("USERNAME");
             string strApiPassword = ap.getAccessKey("PASSWORD");
             string strApiKey = ap.getAccessKey("APIKEY");
-
-            db.CreateTable<Customer>();
-            db.DeleteAll<Customer>();
-            //ThreadPool.QueueUserWorkItem(o => populateCustomerTable(strApiUrl, strApiKey, db));
-                    populateCustomerTable(strApiUrl, strApiKey, db);
-
-            db.CreateTable<Project>();
-            db.DeleteAll<Project>();
-   //         ThreadPool.QueueUserWorkItem(o => populateProjectTable(strApiUrl, strApiKey, db));
-                    populateProjectTable(strApiUrl, strApiKey, db);;
-
-            db.CreateTable<ProjectActivity>();
-            db.DeleteAll<ProjectActivity>();
-           // ThreadPool.QueueUserWorkItem(o => populateActivityTable(strApiUrl, strApiKey, db));
-                   populateActivityTable(strApiUrl, strApiKey, db);
 
             save_button.Click += delegate
             {
@@ -82,14 +71,9 @@ namespace TimeTracker
                     TextView username = FindViewById<TextView>(Resource.Id.edit_username);
                     ap.saveAccessKey("USERNAME", username.Text.Trim(charsToTrim),true);
 
-
                     TextView password = FindViewById<TextView>(Resource.Id.edit_password);
                     ap.saveAccessKey("PASSWORD", password.Text.Trim(charsToTrim),true);
 
-                     strApiUrl = ap.getAccessKey("URL");
-                     strApiUserName = ap.getAccessKey("USERNAME");
-                     strApiPassword = ap.getAccessKey("PASSWORD");
-                    strApiKey = ap.getAccessKey("APIKEY");
                     // Connect to the Soap Service here for Auth
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
@@ -104,14 +88,22 @@ namespace TimeTracker
                     XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
                     strApiKey = apiNode.InnerXml;
                     ap.saveAccessKey("APIKEY", strApiKey, true);
-                    // StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                    db.CreateTable<Customer>();
+                    db.DeleteAll<Customer>();
+                    ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
+
+                    db.CreateTable<Project>();
+                    db.DeleteAll<Project>();
+                    ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+
+                    //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
 
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Toast.MakeText(ApplicationContext, "All fields are required", ToastLength.Long).Show();
-                    
+                    Toast.MakeText(ApplicationContext, e.Message, ToastLength.Long).Show();
+
                 }
             };
 
@@ -122,13 +114,14 @@ namespace TimeTracker
                 StartActivity(typeof(SqliteActivity));
             };
 
-            Button cancel_button = FindViewById<Button>(Resource.Id.btn_cancel);
+            Button btn_ca = FindViewById<Button>(Resource.Id.btn_cancel);
             cancel_button.Click += delegate
             {
                 StartActivity(typeof(MainActivity));
             };
         }
 
+ 
         /// <summary>
         /// Populates the customer table.
         /// </summary>
@@ -172,7 +165,7 @@ namespace TimeTracker
 
                 }
             }
-            catch
+            finally
             {
 
             }
@@ -193,7 +186,7 @@ namespace TimeTracker
                 Service.AllowAutoRedirect = true;
 
                 //Get details of the active recording
-                object responseObject = Service.getProjects(strApiKey, true);
+                object responseObject = Service.getProjects(strApiKey, false);
 
                 XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
 
@@ -224,9 +217,12 @@ namespace TimeTracker
                     db.Insert(newProject);
 
                 }
+                db.CreateTable<ProjectActivity>();
+                db.DeleteAll<ProjectActivity>();
+                // Don;t thread this as it requires get Projects to complete 
+                populateActivityTable(strApiUrl, strApiKey, db);
             }
-            catch
-            {
+            finally{
 
             }
         }
@@ -251,8 +247,8 @@ namespace TimeTracker
                 foreach (var project in projects)
                 {
                     //Get details of the active recording
-                    object responseObject = Service.getTasks(strApiKey, project.ID);
-
+                    object responseObject = Service.getTasks(strApiKey, project.ProjectID);
+                                                             
                     XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
 
                     XmlNodeList activityNodeXml;
@@ -282,9 +278,9 @@ namespace TimeTracker
                     }
                 }
             }
-            catch (Exception e)
+            finally 
             {
-                throw (e);
+
             }
         }
 

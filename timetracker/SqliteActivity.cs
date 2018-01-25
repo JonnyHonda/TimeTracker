@@ -32,35 +32,47 @@ namespace TimeTracker
             Tv.Text = "";
             Tv.Append("======= Customers ==========");
             Tv.Append(System.Environment.NewLine);
-            foreach (var customer in customers)
+            try
             {
-                Tv.Append (customer.ToString());
-                Tv.Append(System.Environment.NewLine);
-            }
+                foreach (var customer in customers)
+                {
+                    Tv.Append(customer.ToString());
+                    Tv.Append(System.Environment.NewLine);
+                }
+            }catch{}
+
             Tv.Append("=========================");
             Tv.Append(System.Environment.NewLine);
 
             Tv.Append("======= Projects ==========");
             Tv.Append(System.Environment.NewLine);
-            var projects = db.Table<Project>();
-
-            foreach (var project in projects)
+            try
             {
-                Tv.Append(project.ToString());
-                Tv.Append(System.Environment.NewLine);
-            }
+                var projects = db.Table<Project>();
+
+                foreach (var project in projects)
+                {
+                    Tv.Append(project.ToString());
+                    Tv.Append(System.Environment.NewLine);
+                }
+            }catch{}
+
             Tv.Append("=========================");
             Tv.Append(System.Environment.NewLine);
 
             Tv.Append("======= Activities ==========");
             Tv.Append(System.Environment.NewLine);
-            var activities = db.Table<ProjectActivity>();
-
-            foreach (var activity in activities)
+            try
             {
-                Tv.Append(activity.ToString());
-                Tv.Append(System.Environment.NewLine);
-            }
+                var activities = db.Table<ProjectActivity>();
+
+                foreach (var activity in activities)
+                {
+                    Tv.Append(activity.ToString());
+                    Tv.Append(System.Environment.NewLine);
+                }
+            }catch{}
+
             Tv.Append("=========================");
             Tv.Append(System.Environment.NewLine);
 

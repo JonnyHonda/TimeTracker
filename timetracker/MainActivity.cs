@@ -11,10 +11,10 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "TimeTracker", MainLauncher = false, Icon = "@mipmap/icon")]
+    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        public bool debug = true;
+        public bool debug = false;
         public string strEntryId;
         public string strProjectID;
         public string strActivityID;
@@ -94,51 +94,57 @@ namespace TimeTracker
                  * 
                  *////////////////////////////////////////////
                 Spinner Customers = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
-                var customers = db.Table<Customer>();
-                if (db.Table<Customer>().Count() > 0)
+                try
                 {
-                    var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                    foreach (var customer in customers)
+                    var customers = db.Table<Customer>();
+                    if (db.Table<Customer>().Count() > 0)
                     {
-                        customeradapter.Add(customer.Name);
+                        var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                        foreach (var customer in customers)
+                        {
+                            customeradapter.Add(customer.Name);
+                        }
+                        Customers.Adapter = customeradapter;
                     }
-                    Customers.Adapter = customeradapter;
-                }
-
+                }catch{}
                 /********************************************
                  * 
                  * Store Projects in DB and populate Spinner
                  * 
                  *////////////////////////////////////////////
                 Spinner Projects = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-                var projects = db.Table<Project>();
-                if (db.Table<Project>().Count() > 0)
+                try
                 {
-                    var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                    foreach (var project in projects)
+                    var projects = db.Table<Project>();
+                    if (db.Table<Project>().Count() > 0)
                     {
-                        projectadapter.Add(project.Name);
+                        var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                        foreach (var project in projects)
+                        {
+                            projectadapter.Add(project.Name);
+                        }
+                        Projects.Adapter = projectadapter;
                     }
-                    Projects.Adapter = projectadapter;
-                }
-
+                }catch{}
                 /********************************************
                  * 
                  * Store Activities in DB and populate Spinner
                  * 
                  *////////////////////////////////////////////
                 Spinner Activities = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-                var activities = db.Table<ProjectActivity>();
-                if (db.Table<ProjectActivity>().Count() > 0)
+                try
                 {
-                    var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                    foreach (var activity in activities)
+                    var activities = db.Table<ProjectActivity>();
+                    if (db.Table<ProjectActivity>().Count() > 0)
                     {
-                        activityadapter.Add(activity.Name);
+                        var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                        foreach (var activity in activities)
+                        {
+                            activityadapter.Add(activity.Name);
+                        }
+                        Activities.Adapter = activityadapter;
                     }
-                    Activities.Adapter = activityadapter;
-                }
-
+                }catch{}
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
@@ -253,7 +259,7 @@ namespace TimeTracker
 
 
         /// <summary>
-        /// Runs the update loop.
+        /// Runs the update loop. This loop runs foreve, and updates the clock ever second provided that the RunUpdateLoopState in true
         /// </summary>
         private async void RunUpdateLoop()
         {
