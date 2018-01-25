@@ -244,14 +244,6 @@ namespace TimeTracker
                     StartActivity(typeof(Settings));
                 };
 
-                /** 
-                    OnCLick event to clear then Shared Preferences, this function only clears the stored prefs
-                **/
-                Button clearButton = FindViewById<Button>(Resource.Id.btn_clear);
-                clearButton.Click += delegate
-                {
-                    ap.clearPrefs();
-                };
             }
 
         }
