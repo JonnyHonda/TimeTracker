@@ -14,7 +14,7 @@ namespace TimeTracker
     [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        public bool debug = false;
+        public bool debug = true;
         public string strEntryId;
         public string strProjectID;
         public string strActivityID;
@@ -210,9 +210,9 @@ namespace TimeTracker
                         throw (e);
                     }
                 }
-                catch (Exception e)
+                catch
                 {
-                    throw (e);
+                 //   throw (e);
                 }
             };
 
@@ -315,9 +315,9 @@ namespace TimeTracker
 
                 }
             }
-            catch(Exception e)
+            catch
             {
-                throw (e);
+            //    throw (e);
             }
         }
 
@@ -375,9 +375,9 @@ namespace TimeTracker
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw (e);
+             //   throw (e);
             }
         }
 
@@ -429,9 +429,9 @@ namespace TimeTracker
 
                 }
             }
-            catch(Exception e)
+            catch
             {
-                throw (e);
+           //     throw (e);
             }
         }
 
