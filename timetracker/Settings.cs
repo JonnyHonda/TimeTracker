@@ -272,7 +272,7 @@ namespace TimeTracker
                                     break;
                                 case "activityID":
                                     newActivity.ActivityID = Convert.ToInt16(n["value"].InnerText);
-                                    newActivity.ProjectID = project.ID;
+                                    newActivity.ProjectID = project.ProjectID;
                                     break;
                             }
                         }

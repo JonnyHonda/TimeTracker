@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
 using Android.App;
@@ -26,7 +27,10 @@ namespace TimeTracker
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
 
-
+        public Dictionary<int, int> CustomerLookupList = new Dictionary<int, int>();
+        public Dictionary<int, int> ProjectLookupList = new Dictionary<int, int>();
+        public Dictionary<int, int> ActivitiesLookupList = new Dictionary<int, int>();
+        public SQLiteConnection db;
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -35,6 +39,11 @@ namespace TimeTracker
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
+
+            string dbPath = System.IO.Path.Combine(
+                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+                 "localkimaidata.db3");
+            db = new SQLiteConnection(dbPath);
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
 
             RunUpdateLoop();
@@ -84,17 +93,11 @@ namespace TimeTracker
                     }
                 }
 
-                string dbPath = System.IO.Path.Combine(
-                     System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                     "localkimaidata.db3");
-                var db = new SQLiteConnection(dbPath);
+                PopulateCustomersSpinner();
 
+                // PopulateProjectsSpinner(db,1);
 
-                PopulateCustomersSpinner(db);
-
-                PopulateProjectsSpinner(db,1);
-
-                PopulateActivitiesSpinner(db);
+                // PopulateActivitiesSpinner(db);
 
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
@@ -200,73 +203,99 @@ namespace TimeTracker
         }
 
 
-        private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        private void CustomerSpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
 
-            string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
-            Toast.MakeText(this, toast, ToastLength.Long).Show();
+      //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
+            PopulateProjectsSpinner(CustomerLookupList[e.Position]);
+        //    Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
 
-        private void PopulateCustomersSpinner(SQLiteConnection db)
+        private void PopulateCustomersSpinner()
         {
             Spinner CustomersSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
+            CustomersSpinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(CustomerSpinnerItemSelected);
 
             try
             {
+                CustomerLookupList.Clear();
                 var customers = db.Table<Customer>();
                 if (db.Table<Customer>().Count() > 0)
                 {
                     var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    int index = 0;
                     foreach (var customer in customers)
                     {
                         customeradapter.Add(customer.Name);
+                        CustomerLookupList.Add(index++, customer.CustomerID);
                     }
                     CustomersSpinner.Adapter = customeradapter;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+            }
 
         }
 
-        private void PopulateProjectsSpinner(SQLiteConnection db, int customerID)
+        private void PopulateProjectsSpinner(int customerID)
         {
             Spinner ProjectsSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+            ProjectsSpinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(ProjectSpinnerItemSelected);
+
             try
             {
-                //var projects = db.Table<Project>();
-                var projects = db.Query<Project>("Select * from Project WHERE CustomerID={0}",customerID);
+                ProjectLookupList.Clear();
+                var projects = db.Query<Project>("SELECT * FROM Project WHERE CustomerID = ?", customerID);
+                int index = 0;
                 if (db.Table<Project>().Count() > 0)
                 {
                     var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     foreach (var project in projects)
                     {
                         projectadapter.Add(project.Name);
+                        ProjectLookupList.Add(index++, project.ProjectID);
                     }
                     ProjectsSpinner.Adapter = projectadapter;
                 }
             }
-            catch { }
+            catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
 
         }
 
-        private void PopulateActivitiesSpinner(SQLiteConnection db)
+        private void ProjectSpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+
+      //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
+
+            PopulateActivitiesSpinner(ProjectLookupList[e.Position]);
+
+      //      Toast.MakeText(this, toast, ToastLength.Long).Show();
+        }
+
+        private void PopulateActivitiesSpinner(int projectID)
         {
             Spinner ActivitiesSpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
             try
             {
-                var activities = db.Table<ProjectActivity>();
+                ActivitiesLookupList.Clear();
+                var activities = db.Query<ProjectActivity>("SELECT * FROM ProjectActivity WHERE ProjectID = ?", projectID);
+                int index = 0;
                 if (db.Table<ProjectActivity>().Count() > 0)
                 {
                     var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     foreach (var activity in activities)
                     {
                         activityadapter.Add(activity.Name);
+                        ActivitiesLookupList.Add(index++, activity.ActivityID);
                     }
                     ActivitiesSpinner.Adapter = activityadapter;
                 }
             }
-            catch { }
+            catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
         }
 
 
