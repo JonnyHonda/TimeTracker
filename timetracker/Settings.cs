@@ -17,7 +17,7 @@ namespace TimeTracker
     {
         public bool debug = false;
         public bool HoldState = true;
-        public int HoldDuration = 10;
+ 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);

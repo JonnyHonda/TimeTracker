@@ -21,6 +21,9 @@ namespace TimeTracker
         public string strActivityID;
         public bool startButtonState;
         public bool stopButtonState;
+        public int CurrentCustomerInTimer;
+        public int CurrentProjectInTimer;
+        public int CurrentActivityInTimer;
 
         public TextView TimerViewer;
         public TextView Tv2;
@@ -95,6 +98,8 @@ namespace TimeTracker
 
                 PopulateCustomersSpinner();
 
+
+
                 // PopulateProjectsSpinner(db,1);
 
                 // PopulateActivitiesSpinner(db);
@@ -133,11 +138,15 @@ namespace TimeTracker
                         Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                         Service.AllowAutoRedirect = true;
                         //Get details of the active recording
-                        object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
+                        object responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
                         // toggle button states
                         startbutton.Enabled = false; RunUpdateLoopState = true;
                         stopbutton.Enabled = true;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+                        Toast.MakeText(this, String.Format("C={0} - P={1} - A={2}",
+                                                           CustomerLookupList[CurrentCustomerInTimer],
+                                                           ProjectLookupList[CurrentProjectInTimer],
+                                                           ActivitiesLookupList[CurrentActivityInTimer]), ToastLength.Long).Show();
                         // need to get the new active recording
                         try
                         {
@@ -209,6 +218,7 @@ namespace TimeTracker
 
       //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
+            CurrentCustomerInTimer = e.Position;
         //    Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
 
@@ -272,13 +282,14 @@ namespace TimeTracker
       //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
 
             PopulateActivitiesSpinner(ProjectLookupList[e.Position]);
-
+            CurrentProjectInTimer = e.Position;
       //      Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
 
         private void PopulateActivitiesSpinner(int projectID)
         {
             Spinner ActivitiesSpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+            ActivitiesSpinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(ActivitySpinnerItemSelected);
             try
             {
                 ActivitiesLookupList.Clear();
@@ -296,6 +307,11 @@ namespace TimeTracker
                 }
             }
             catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
+        }
+
+        private void ActivitySpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            CurrentActivityInTimer = e.Position;
         }
 
 
@@ -384,11 +400,13 @@ namespace TimeTracker
                             // projectText.Append((node["value"].InnerText));
                             // projectText.Append(System.Environment.NewLine);
                             strActivityID = node["value"].InnerText;
+                            CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
                             break;
                         case "projectID":
                             //projectText.Append((node["value"].InnerText));
                             //projectText.Append(System.Environment.NewLine);
                             strProjectID = node["value"].InnerText;
+                            CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
                             break;
                         case "start":
                             //     projectText.Append((node["value"].InnerText));
@@ -418,11 +436,13 @@ namespace TimeTracker
                             break;
                         case "customerID":
                             //    projectText.Append((node["value"].InnerText));
+                            CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
                             break;
                         case "customerName":
                             projectText.Append("Customer: ");
                             projectText.Append((node["value"].InnerText));
                             projectText.Append(System.Environment.NewLine);
+
                             break;
                         case "projectName":
                             projectText.Append("Project: ");
