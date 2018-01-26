@@ -26,6 +26,7 @@ namespace TimeTracker
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
 
+
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -88,63 +89,13 @@ namespace TimeTracker
                      "localkimaidata.db3");
                 var db = new SQLiteConnection(dbPath);
 
-                /********************************************
-                 * 
-                 * Store Customers in DB and populate Spinner
-                 * 
-                 *////////////////////////////////////////////
-                Spinner Customers = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
-                try
-                {
-                    var customers = db.Table<Customer>();
-                    if (db.Table<Customer>().Count() > 0)
-                    {
-                        var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                        foreach (var customer in customers)
-                        {
-                            customeradapter.Add(customer.Name);
-                        }
-                        Customers.Adapter = customeradapter;
-                    }
-                }catch{}
-                /********************************************
-                 * 
-                 * Store Projects in DB and populate Spinner
-                 * 
-                 *////////////////////////////////////////////
-                Spinner Projects = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-                try
-                {
-                    var projects = db.Table<Project>();
-                    if (db.Table<Project>().Count() > 0)
-                    {
-                        var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                        foreach (var project in projects)
-                        {
-                            projectadapter.Add(project.Name);
-                        }
-                        Projects.Adapter = projectadapter;
-                    }
-                }catch{}
-                /********************************************
-                 * 
-                 * Store Activities in DB and populate Spinner
-                 * 
-                 *////////////////////////////////////////////
-                Spinner Activities = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-                try
-                {
-                    var activities = db.Table<ProjectActivity>();
-                    if (db.Table<ProjectActivity>().Count() > 0)
-                    {
-                        var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
-                        foreach (var activity in activities)
-                        {
-                            activityadapter.Add(activity.Name);
-                        }
-                        Activities.Adapter = activityadapter;
-                    }
-                }catch{}
+
+                PopulateCustomersSpinner(db);
+
+                PopulateProjectsSpinner(db,1);
+
+                PopulateActivitiesSpinner(db);
+
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
@@ -178,14 +129,14 @@ namespace TimeTracker
                     {
                         Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                         Service.AllowAutoRedirect = true;
-                    //Get details of the active recording
-                    object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
-                    // toggle button states
-                    startbutton.Enabled = false; RunUpdateLoopState = true;
+                        //Get details of the active recording
+                        object responseObject = Service.startRecord(strApiKey, Convert.ToInt16(strProjectID), Convert.ToInt16(strActivityID));
+                        // toggle button states
+                        startbutton.Enabled = false; RunUpdateLoopState = true;
                         stopbutton.Enabled = true;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                    // need to get the new active recording
-                    try
+                        // need to get the new active recording
+                        try
                         {
                             int x = getActiveRecording(strApiUrl, strApiKey);
                         }
@@ -210,16 +161,16 @@ namespace TimeTracker
                     {
                         Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                         Service.AllowAutoRedirect = true;
-                    // Toggle button status
-                    startbutton.Enabled = true; RunUpdateLoopState = false;
+                        // Toggle button status
+                        startbutton.Enabled = true; RunUpdateLoopState = false;
                         stopbutton.Enabled = false;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
 
-                    //Get details of the active recording
-                    object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
+                        //Get details of the active recording
+                        object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
 
-                    // need to get the new active recording, incase it did not stop
-                    try
+                        // need to get the new active recording, incase it did not stop
+                        try
                         {
                             int x = getActiveRecording(strApiUrl, strApiKey);
                         }
@@ -249,6 +200,76 @@ namespace TimeTracker
         }
 
 
+        private void spinner_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+
+            string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
+            Toast.MakeText(this, toast, ToastLength.Long).Show();
+        }
+
+        private void PopulateCustomersSpinner(SQLiteConnection db)
+        {
+            Spinner CustomersSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
+
+            try
+            {
+                var customers = db.Table<Customer>();
+                if (db.Table<Customer>().Count() > 0)
+                {
+                    var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var customer in customers)
+                    {
+                        customeradapter.Add(customer.Name);
+                    }
+                    CustomersSpinner.Adapter = customeradapter;
+                }
+            }
+            catch { }
+
+        }
+
+        private void PopulateProjectsSpinner(SQLiteConnection db, int customerID)
+        {
+            Spinner ProjectsSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+            try
+            {
+                //var projects = db.Table<Project>();
+                var projects = db.Query<Project>("Select * from Project WHERE CustomerID={0}",customerID);
+                if (db.Table<Project>().Count() > 0)
+                {
+                    var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var project in projects)
+                    {
+                        projectadapter.Add(project.Name);
+                    }
+                    ProjectsSpinner.Adapter = projectadapter;
+                }
+            }
+            catch { }
+
+        }
+
+        private void PopulateActivitiesSpinner(SQLiteConnection db)
+        {
+            Spinner ActivitiesSpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+            try
+            {
+                var activities = db.Table<ProjectActivity>();
+                if (db.Table<ProjectActivity>().Count() > 0)
+                {
+                    var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
+                    foreach (var activity in activities)
+                    {
+                        activityadapter.Add(activity.Name);
+                    }
+                    ActivitiesSpinner.Adapter = activityadapter;
+                }
+            }
+            catch { }
+        }
+
+
 
         /// <summary>
         /// Runs the update loop. This loop runs foreve, and updates the clock ever second provided that the RunUpdateLoopState in true
@@ -262,11 +283,13 @@ namespace TimeTracker
                 TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
                 if (RunUpdateLoopState)
                 {
-                   
+
                     string str = time.ToString(@"hh\:mm\:ss");
-                        TimerViewer.Text = str;
-                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
-                }else{
+                    TimerViewer.Text = str;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
+                }
+                else
+                {
                     TimerViewer.Text = "00:00:00";
                 }
             }

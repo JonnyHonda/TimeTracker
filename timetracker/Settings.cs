@@ -1,16 +1,10 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Xml;
 using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
@@ -66,17 +60,21 @@ namespace TimeTracker
                 {
                     char[] charsToTrim = { '*', ' ', '\'' };
                     TextView url = FindViewById<TextView>(Resource.Id.edit_url);
-                    ap.saveAccessKey("URL", url.Text.Trim(charsToTrim),true);
+                    strApiUrl = url.Text.Trim(charsToTrim);
+                    ap.saveAccessKey("URL", strApiUrl, true);
 
                     TextView username = FindViewById<TextView>(Resource.Id.edit_username);
-                    ap.saveAccessKey("USERNAME", username.Text.Trim(charsToTrim),true);
+                    strApiUserName = username.Text.Trim(charsToTrim);
+                    ap.saveAccessKey("USERNAME", strApiUserName, true);
 
                     TextView password = FindViewById<TextView>(Resource.Id.edit_password);
-                    ap.saveAccessKey("PASSWORD", password.Text.Trim(charsToTrim),true);
+                    strApiPassword = password.Text.Trim(charsToTrim);
+                    ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
                     // Connect to the Soap Service here for Auth
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
+
                     // Get the api key by logging in
                     object responseObject = Service.authenticate(strApiUserName, strApiPassword);
 
@@ -86,17 +84,22 @@ namespace TimeTracker
 
                     // fetech the abcolute position of the api key
                     XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
-                    strApiKey = apiNode.InnerXml;
-                    ap.saveAccessKey("APIKEY", strApiKey, true);
-                    db.CreateTable<Customer>();
-                    db.DeleteAll<Customer>();
-                    ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
+                    if ((apiNode != null))
+                    {
+                        strApiKey = apiNode.InnerXml;
+                        ap.saveAccessKey("APIKEY", strApiKey, true);
+                        db.CreateTable<Customer>();
+                        db.DeleteAll<Customer>();
+                        ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
 
-                    db.CreateTable<Project>();
-                    db.DeleteAll<Project>();
-                    ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
-
-                    //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                        db.CreateTable<Project>();
+                        db.DeleteAll<Project>();
+                        ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+                    }else{
+                        Toast.MakeText(ApplicationContext, "Log in failed", ToastLength.Short).Show();
+                        return;
+                    }
+                    StartActivity(new Intent(Application.Context, typeof(MainActivity)));
 
 
                 }
