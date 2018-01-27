@@ -12,7 +12,7 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
     public class MainActivity : Activity
     {
         public bool debug = false;
@@ -45,7 +45,7 @@ namespace TimeTracker
 
             string dbPath = System.IO.Path.Combine(
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                 "localkimaidata.db3");
+                "localkimaidata.db3");
             db = new SQLiteConnection(dbPath);
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
 
@@ -400,13 +400,13 @@ namespace TimeTracker
                             // projectText.Append((node["value"].InnerText));
                             // projectText.Append(System.Environment.NewLine);
                             strActivityID = node["value"].InnerText;
-                            CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
+                            //    CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
                             break;
                         case "projectID":
                             //projectText.Append((node["value"].InnerText));
                             //projectText.Append(System.Environment.NewLine);
                             strProjectID = node["value"].InnerText;
-                            CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
+                         //   CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
                             break;
                         case "start":
                             //     projectText.Append((node["value"].InnerText));
@@ -436,7 +436,7 @@ namespace TimeTracker
                             break;
                         case "customerID":
                             //    projectText.Append((node["value"].InnerText));
-                            CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
+                           // CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
                             break;
                         case "customerName":
                             projectText.Append("Customer: ");
