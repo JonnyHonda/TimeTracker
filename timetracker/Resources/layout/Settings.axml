@@ -24,6 +24,7 @@
         android:scrollHorizontally="true"
         android:maxLines="1"
         android:layout_gravity="fill_horizontal"
+        android:singleLine="true"
         android:hint="https://kimai.tsgapis.com" />
 <!-- Row 3 -->
     <TextView
@@ -34,7 +35,9 @@
     <EditText
         android:id="@+id/edit_username"
         android:layout_gravity="fill_horizontal"
-        android:hint="john.burrin" />
+        android:singleLine="true"
+        android:maxLines="1"
+        android:hint="user.name" />
 <!-- Row 4 -->
     <TextView
         android:id="@+id/lbl_password"
