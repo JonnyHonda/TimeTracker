@@ -229,6 +229,8 @@ namespace TimeTracker
 
             }
         }
+
+
         /// <summary>
         /// Populates the activity table.
         /// </summary>

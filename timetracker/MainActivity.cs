@@ -98,12 +98,6 @@ namespace TimeTracker
 
                 PopulateCustomersSpinner();
 
-
-
-                // PopulateProjectsSpinner(db,1);
-
-                // PopulateActivitiesSpinner(db);
-
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
@@ -211,17 +205,23 @@ namespace TimeTracker
 
         }
 
-
+        /// <summary>
+        /// Customers the spinner item selected.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
         private void CustomerSpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
 
-      //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
             CurrentCustomerInTimer = e.Position;
-        //    Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
 
+
+        /// <summary>
+        /// Populates the customers spinner.
+        /// </summary>
         private void PopulateCustomersSpinner()
         {
             Spinner CustomersSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
@@ -231,7 +231,7 @@ namespace TimeTracker
             {
                 CustomerLookupList.Clear();
                 var customers = db.Table<Customer>();
-                if (db.Table<Customer>().Count() > 0)
+                if (customers.Count() > 0)
                 {
                     var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     int index = 0;
@@ -250,6 +250,11 @@ namespace TimeTracker
 
         }
 
+
+        /// <summary>
+        /// Populates the projects spinner.
+        /// </summary>
+        /// <param name="customerID">Customer identifier.</param>
         private void PopulateProjectsSpinner(int customerID)
         {
             Spinner ProjectsSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
@@ -275,17 +280,25 @@ namespace TimeTracker
 
         }
 
+
+        /// <summary>
+        /// Projects the spinner item selected.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
         private void ProjectSpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             Spinner spinner = (Spinner)sender;
 
-      //      string toast = string.Format("{0}", spinner.GetItemAtPosition(e.Position));
-
             PopulateActivitiesSpinner(ProjectLookupList[e.Position]);
             CurrentProjectInTimer = e.Position;
-      //      Toast.MakeText(this, toast, ToastLength.Long).Show();
         }
 
+
+        /// <summary>
+        /// Populates the activities spinner.
+        /// </summary>
+        /// <param name="projectID">Project identifier.</param>
         private void PopulateActivitiesSpinner(int projectID)
         {
             Spinner ActivitiesSpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
@@ -339,6 +352,7 @@ namespace TimeTracker
                 }
             }
         }
+
 
         /// <summary>
         /// Gets the active recording.
