@@ -30,17 +30,20 @@
         android:id="@+id/spinnerCustomers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_columnSpan="2" />
+        android:layout_columnSpan="2"
+        android:spinnerMode="dialog" />
     <Spinner
         android:id="@+id/spinnerProjects"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_columnSpan="2" />
+        android:layout_columnSpan="2"
+        android:spinnerMode="dialog" />
     <Spinner
         android:id="@+id/spinnerActivities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_columnSpan="2" />
+        android:layout_columnSpan="2"
+        android:spinnerMode="dialog" />
     <Button
         android:text="Start"
         android:id="@+id/btn_start" />
