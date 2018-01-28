@@ -110,6 +110,7 @@ namespace TimeTracker
                 }
             };
 
+            getVersionInfo();
 
             Button sql_button = FindViewById<Button>(Resource.Id.btn_view_data);
             sql_button.Click += delegate
@@ -124,6 +125,16 @@ namespace TimeTracker
             };
         }
 
+        //get the current version number and name
+        private void getVersionInfo()
+        {
+            String versionName = "";
+            int versionCode = -1;
+            versionCode = Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionCode;
+            versionName =  Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionName;
+            TextView textViewVersionInfo = FindViewById<TextView>(Resource.Id.versionInfo);
+            textViewVersionInfo.Append(String.Format("\nVersion number:{0}.{1}", versionName, versionCode));
+        }
  
         /// <summary>
         /// Populates the customer table.

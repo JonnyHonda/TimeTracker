@@ -44,11 +44,11 @@ namespace TimeTracker
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050015
-			public const int SCROLLER_ID = 2131034133;
-			
 			// aapt resource value: 0x7f050016
-			public const int TEXT_STATUS_ID = 2131034134;
+			public const int SCROLLER_ID = 2131034134;
+			
+			// aapt resource value: 0x7f050017
+			public const int TEXT_STATUS_ID = 2131034135;
 			
 			// aapt resource value: 0x7f050002
 			public const int TimerView = 2131034114;
@@ -65,8 +65,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f050011
 			public const int btn_settings = 2131034129;
 			
-			// aapt resource value: 0x7f050014
-			public const int btn_sqlcancel = 2131034132;
+			// aapt resource value: 0x7f050015
+			public const int btn_sqlcancel = 2131034133;
 			
 			// aapt resource value: 0x7f050006
 			public const int btn_start = 2131034118;
@@ -112,6 +112,9 @@ namespace TimeTracker
 			
 			// aapt resource value: 0x7f050009
 			public const int textView2 = 2131034121;
+			
+			// aapt resource value: 0x7f050014
+			public const int versionInfo = 2131034132;
 			
 			static Id()
 			{
@@ -166,6 +169,9 @@ namespace TimeTracker
 			
 			// aapt resource value: 0x7f040000
 			public const int app_name = 2130968576;
+			
+			// aapt resource value: 0x7f040001
+			public const int code_name = 2130968577;
 			
 			static String()
 			{

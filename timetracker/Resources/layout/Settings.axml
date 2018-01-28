@@ -16,37 +16,43 @@
 <!-- Row 2 -->
     <TextView
         android:id="@+id/lbl_url"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Url" />
     <Space
-        android:layout_width="10dp" />
+        android:layout_width="1dp" />
     <EditText
         android:id="@+id/edit_url"
         android:scrollHorizontally="true"
         android:maxLines="1"
         android:layout_gravity="fill_horizontal"
         android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:hint="https://kimai.tsgapis.com" />
 <!-- Row 3 -->
     <TextView
         android:id="@+id/lbl_username"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="User name" />
     <Space
-        android:layout_width="10dp" />
+        android:layout_width="1dp" />
     <EditText
         android:id="@+id/edit_username"
         android:layout_gravity="fill_horizontal"
         android:singleLine="true"
         android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:hint="user.name" />
 <!-- Row 4 -->
     <TextView
         android:id="@+id/lbl_password"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Password" />
     <Space
-        android:layout_width="10dp" />
+        android:layout_width="1dp" />
     <EditText
         android:id="@+id/edit_password"
         android:inputType="textPassword"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_gravity="fill_horizontal"
         android:hint="***********" />
 <!-- Row 5 -->
@@ -62,4 +68,8 @@
         android:id="@+id/btn_view_data"
         android:text="View Sqlite Data"
         android:layout_columnSpan="3" />
+    <TextView
+        android:text="@string/code_name"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/versionInfo" />
 </GridLayout>
