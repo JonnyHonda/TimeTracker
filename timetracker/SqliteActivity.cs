@@ -7,7 +7,7 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "SqliteActivity", MainLauncher = false)]
+    [Activity(Label = "Kimai Sqlite Data", MainLauncher = false)]
     public class SqliteActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

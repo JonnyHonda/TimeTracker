@@ -334,15 +334,19 @@ namespace TimeTracker
         /// </summary>
         private async void RunUpdateLoop()
         {
-
             while (true)
             {
                 await Task.Delay(1000);
                 TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
+
                 if (RunUpdateLoopState)
                 {
+                    int  hours = time.Hours;
+                    if (time.Days > 0) {
+                        hours = (time.Days * 24) + hours; 
+                    }
 
-                    string str = time.ToString(@"hh\:mm\:ss");
+                    string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
                     TimerViewer.Text = str;
                     Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
                 }
