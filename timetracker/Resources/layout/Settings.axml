@@ -68,8 +68,4 @@
         android:id="@+id/btn_view_data"
         android:text="View Sqlite Data"
         android:layout_columnSpan="3" />
-    <TextView
-        android:text="@string/code_name"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/versionInfo" />
 </GridLayout>

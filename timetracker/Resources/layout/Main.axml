@@ -59,5 +59,14 @@
     <TextView
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView2"
+        android:layout_columnSpan="2" />
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/relativeLayout1" />
+    <Button
+        android:text="About TimeTracker"
+        android:id="@+id/Button"
+        android:layout_gravity="bottom" />
 </GridLayout>

@@ -12,7 +12,7 @@ using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
 {
-    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
+    [Activity(Label = "TimeTracker", MainLauncher = false, Icon = "@mipmap/ic_launcher")]
     public class MainActivity : Activity
     {
         public bool debug = false;
