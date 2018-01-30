@@ -8,6 +8,7 @@ using Android.OS;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
+using TimeTracker.Resources;
 using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
@@ -34,6 +35,7 @@ namespace TimeTracker
         public Dictionary<int, int> ProjectLookupList = new Dictionary<int, int>();
         public Dictionary<int, int> ActivitiesLookupList = new Dictionary<int, int>();
         public SQLiteConnection db;
+        AppPreferences ap;
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -50,15 +52,27 @@ namespace TimeTracker
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
 
             RunUpdateLoop();
-            Button startbutton = FindViewById<Button>(Resource.Id.btn_start);
-            Button stopbutton = FindViewById<Button>(Resource.Id.btn_stop);
             // Fetch App Prefs
             Context mContext = Android.App.Application.Context;
-            AppPreferences ap = new AppPreferences(mContext);
+            ap = new AppPreferences(mContext);
             string strApiUrl = ap.getAccessKey("URL");
             string strApiUserName = ap.getAccessKey("USERNAME");
             string strApiPassword = ap.getAccessKey("PASSWORD");
             string strApiKey = ap.getAccessKey("APIKEY");
+
+            try
+            {
+                CurrentCustomerInTimer = Convert.ToInt16(ap.getAccessKey("CurrentCustomerInTimer"));
+                CurrentProjectInTimer = Convert.ToInt16(ap.getAccessKey("CurrentProjectInTimer"));
+                CurrentActivityInTimer = Convert.ToInt16(ap.getAccessKey("CurrentActivityInTimer"));
+            }catch{
+                CurrentCustomerInTimer = 0;
+                ap.saveAccessKey("CurrentCustomerInTimer","0");
+                CurrentProjectInTimer = 0;
+                ap.saveAccessKey("CurrentProjectInTimer","0");
+                CurrentActivityInTimer = 0;
+                ap.saveAccessKey("CurrentActivityInTimer","0");
+            }
 
             // Looks like we don't have any setting stored so we need to go to the Setting Page
             if (string.IsNullOrEmpty(strApiUrl) || debug)
@@ -97,21 +111,26 @@ namespace TimeTracker
                 }
 
                 PopulateCustomersSpinner();
-
+                ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
                     int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
                     if (countofRecodrings == 0)
                     {
-                        startbutton.Enabled = true; RunUpdateLoopState = false;
-                        stopbutton.Enabled = false;
+
+                        //startbutton.Enabled = true; 
+                        togglebutton.Checked = false;
+                        RunUpdateLoopState = false;
+                        //stopbutton.Enabled = false;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
                     else
                     {
-                        startbutton.Enabled = false; RunUpdateLoopState = true;
-                        stopbutton.Enabled = true;
+                        //startbutton.Enabled = false; 
+                        togglebutton.Checked = true;
+                        RunUpdateLoopState = true;
+                        //stopbutton.Enabled = true;
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
                 }
@@ -121,76 +140,6 @@ namespace TimeTracker
                     mesg.Show();
                 }
 
-                /**
-                 * Start button onClick event, attempts to start a new recording and update the view
-                **/
-                startbutton.Click += delegate
-                {
-
-                    try
-                    {
-                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                        Service.AllowAutoRedirect = true;
-                        //Get details of the active recording
-                        object responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
-                        // toggle button states
-                        startbutton.Enabled = false; RunUpdateLoopState = true;
-                        stopbutton.Enabled = true;
-                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                        Toast.MakeText(this, String.Format("C={0} - P={1} - A={2}",
-                                                           CustomerLookupList[CurrentCustomerInTimer],
-                                                           ProjectLookupList[CurrentProjectInTimer],
-                                                           ActivitiesLookupList[CurrentActivityInTimer]), ToastLength.Long).Show();
-                        // need to get the new active recording
-                        try
-                        {
-                            int x = getActiveRecording(strApiUrl, strApiKey);
-                        }
-                        catch (Exception e)
-                        {
-                            throw (e);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw (e);
-                    }
-                };
-
-
-                /**
-                 * Stop button onClick event, attempts to stop the current recording and update the text view
-                **/
-                stopbutton.Click += delegate
-                {
-                    try
-                    {
-                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                        Service.AllowAutoRedirect = true;
-                        // Toggle button status
-                        startbutton.Enabled = true; RunUpdateLoopState = false;
-                        stopbutton.Enabled = false;
-                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                        //Get details of the active recording
-                        object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
-
-                        // need to get the new active recording, incase it did not stop
-                        try
-                        {
-                            int x = getActiveRecording(strApiUrl, strApiKey);
-                        }
-                        catch (Exception e)
-                        {
-                            throw (e);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
-                        mesg.Show();
-                    }
-                };
 
                 /** 
                     OnCLick event to Launch the settings activity
@@ -201,6 +150,82 @@ namespace TimeTracker
                     StartActivity(typeof(Settings));
                 };
 
+                /** 
+                     OnCLick event to Launch the About activity
+                **/
+                Button about_button = FindViewById<Button>(Resource.Id.btn_about);
+                about_button.Click += delegate
+                {
+                    StartActivity(typeof(About));
+                };
+
+                /**
+                 * 
+                 * OnClick events for toggle button
+                **/
+
+
+                togglebutton.Click += (o, e) => {
+                    // Perform action on clicks
+                    if (togglebutton.Checked)
+                    {
+                        try
+                        {
+                            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                            Service.AllowAutoRedirect = true;
+                            //Get details of the active recording
+                            object responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
+                            // toggle button states
+                            RunUpdateLoopState = true;
+                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                            // need to get the new active recording
+                            try
+                            {
+                                int x = getActiveRecording(strApiUrl, strApiKey);
+                            }
+                            catch (Exception ep)
+                            {
+                                throw (ep);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw (ex);
+                        }
+                        Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                            Service.AllowAutoRedirect = true;
+                            // Toggle button status
+                            RunUpdateLoopState = false;
+                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                            //Get details of the active recording
+                            object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
+
+                            // need to get the new active recording, incase it did not stop
+                            try
+                            {
+                                int x = getActiveRecording(strApiUrl, strApiKey);
+                            }
+                            catch (Exception el)
+                            {
+                                throw (el);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Toast mesg = Toast.MakeText(this, ex.Message, ToastLength.Long);
+                            mesg.Show();
+                        }
+                        Toast.MakeText(this, "Timer Stopped", ToastLength.Short).Show();
+                    }
+                };
             }
 
         }
@@ -216,6 +241,8 @@ namespace TimeTracker
 
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
             CurrentCustomerInTimer = e.Position;
+            ap.saveAccessKey("CurrentCustomerInTimer",CurrentCustomerInTimer.ToString());
+
         }
 
 
@@ -230,8 +257,9 @@ namespace TimeTracker
             try
             {
                 CustomerLookupList.Clear();
-                var customers = db.Table<Customer>();
-                if (customers.Count() > 0)
+                var customers = db.Query<Customer>("SELECT * FROM Customer");
+                int count = customers.Count;
+                if ( count > 0)
                 {
                     var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     int index = 0;
@@ -242,6 +270,18 @@ namespace TimeTracker
                     }
                     CustomersSpinner.Adapter = customeradapter;
                 }
+                if (Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")) > count)
+                {
+                    
+                        CustomersSpinner.SetSelection(0);
+                        ap.saveAccessKey("CurrentCustomerInTimer", "0");
+                        ap.saveAccessKey("CurrentProjectInTimer", "0");
+                        ap.saveAccessKey("CurrentActivityInTimer", "0");
+                    }else{
+                        CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
+                    }
+
+
             }
             catch (Exception ex)
             {
@@ -265,7 +305,8 @@ namespace TimeTracker
                 ProjectLookupList.Clear();
                 var projects = db.Query<Project>("SELECT * FROM Project WHERE CustomerID = ?", customerID);
                 int index = 0;
-                if (db.Table<Project>().Count() > 0)
+                int count = projects.Count;
+                if (count > 0)
                 {
                     var projectadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     foreach (var project in projects)
@@ -275,7 +316,20 @@ namespace TimeTracker
                     }
                     ProjectsSpinner.Adapter = projectadapter;
                 }
+
+                if (Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")) >= count)
+                {
+                    ProjectsSpinner.SetSelection(0);
+                    ap.saveAccessKey("CurrentProjectInTimer", "0");
+                    ap.saveAccessKey("CurrentActivityInTimer", "0");
+                }else{
+                 ProjectsSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")));
+
+                }
+    
+               
             }
+
             catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
 
         }
@@ -292,6 +346,7 @@ namespace TimeTracker
 
             PopulateActivitiesSpinner(ProjectLookupList[e.Position]);
             CurrentProjectInTimer = e.Position;
+            ap.saveAccessKey("CurrentProjectInTimer", CurrentProjectInTimer.ToString());
         }
 
 
@@ -308,7 +363,8 @@ namespace TimeTracker
                 ActivitiesLookupList.Clear();
                 var activities = db.Query<ProjectActivity>("SELECT * FROM ProjectActivity WHERE ProjectID = ?", projectID);
                 int index = 0;
-                if (db.Table<ProjectActivity>().Count() > 0)
+                int count = activities.Count;
+                if (count > 0)
                 {
                     var activityadapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     foreach (var activity in activities)
@@ -318,13 +374,26 @@ namespace TimeTracker
                     }
                     ActivitiesSpinner.Adapter = activityadapter;
                 }
+
+                if (Convert.ToUInt16(ap.getAccessKey("CurrentActivityInTimer")) > count)
+                {
+                    ActivitiesSpinner.SetSelection(0);
+                    ap.saveAccessKey("CurrentActivityInTimer", "0");
+                }
+                else
+                {
+                    ActivitiesSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentActivityInTimer")));
+
+                }
             }
-            catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
+            catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); 
+            }
         }
 
         private void ActivitySpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
             CurrentActivityInTimer = e.Position;
+            ap.saveAccessKey("CurrentActivityInTimer", CurrentActivityInTimer.ToString());
         }
 
 

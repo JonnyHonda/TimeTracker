@@ -44,77 +44,89 @@ namespace TimeTracker
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050016
-			public const int SCROLLER_ID = 2131034134;
+			// aapt resource value: 0x7f06001a
+			public const int SCROLLER_ID = 2131099674;
 			
-			// aapt resource value: 0x7f050017
-			public const int TEXT_STATUS_ID = 2131034135;
+			// aapt resource value: 0x7f06001b
+			public const int TEXT_STATUS_ID = 2131099675;
 			
-			// aapt resource value: 0x7f050002
-			public const int TimerView = 2131034114;
+			// aapt resource value: 0x7f060007
+			public const int TimerView = 2131099655;
 			
-			// aapt resource value: 0x7f050000
-			public const int apiUserNme = 2131034112;
+			// aapt resource value: 0x7f060005
+			public const int apiUserNme = 2131099653;
 			
-			// aapt resource value: 0x7f050012
-			public const int btn_cancel = 2131034130;
+			// aapt resource value: 0x7f060004
+			public const int author_name = 2131099652;
 			
-			// aapt resource value: 0x7f050008
-			public const int btn_main = 2131034120;
+			// aapt resource value: 0x7f06000e
+			public const int btn_about = 2131099662;
 			
-			// aapt resource value: 0x7f050011
-			public const int btn_settings = 2131034129;
+			// aapt resource value: 0x7f060017
+			public const int btn_cancel = 2131099671;
 			
-			// aapt resource value: 0x7f050015
-			public const int btn_sqlcancel = 2131034133;
+			// aapt resource value: 0x7f06000c
+			public const int btn_main = 2131099660;
 			
-			// aapt resource value: 0x7f050006
-			public const int btn_start = 2131034118;
+			// aapt resource value: 0x7f060016
+			public const int btn_settings = 2131099670;
 			
-			// aapt resource value: 0x7f050007
-			public const int btn_stop = 2131034119;
+			// aapt resource value: 0x7f060019
+			public const int btn_sqlcancel = 2131099673;
 			
-			// aapt resource value: 0x7f050013
-			public const int btn_view_data = 2131034131;
+			// aapt resource value: 0x7f060018
+			public const int btn_view_data = 2131099672;
 			
-			// aapt resource value: 0x7f050010
-			public const int edit_password = 2131034128;
+			// aapt resource value: 0x7f060015
+			public const int edit_password = 2131099669;
 			
-			// aapt resource value: 0x7f05000c
-			public const int edit_url = 2131034124;
+			// aapt resource value: 0x7f060011
+			public const int edit_url = 2131099665;
 			
-			// aapt resource value: 0x7f05000e
-			public const int edit_username = 2131034126;
+			// aapt resource value: 0x7f060013
+			public const int edit_username = 2131099667;
 			
-			// aapt resource value: 0x7f05000f
-			public const int lbl_password = 2131034127;
+			// aapt resource value: 0x7f060002
+			public const int imageView1 = 2131099650;
 			
-			// aapt resource value: 0x7f05000a
-			public const int lbl_title = 2131034122;
+			// aapt resource value: 0x7f060014
+			public const int lbl_password = 2131099668;
 			
-			// aapt resource value: 0x7f05000b
-			public const int lbl_url = 2131034123;
+			// aapt resource value: 0x7f06000f
+			public const int lbl_title = 2131099663;
 			
-			// aapt resource value: 0x7f05000d
-			public const int lbl_username = 2131034125;
+			// aapt resource value: 0x7f060010
+			public const int lbl_url = 2131099664;
 			
-			// aapt resource value: 0x7f050005
-			public const int spinnerActivities = 2131034117;
+			// aapt resource value: 0x7f060012
+			public const int lbl_username = 2131099666;
 			
-			// aapt resource value: 0x7f050003
-			public const int spinnerCustomers = 2131034115;
+			// aapt resource value: 0x7f060000
+			public const int linearLayout1 = 2131099648;
 			
-			// aapt resource value: 0x7f050004
-			public const int spinnerProjects = 2131034116;
+			// aapt resource value: 0x7f06000d
+			public const int relativeLayout1 = 2131099661;
 			
-			// aapt resource value: 0x7f050001
-			public const int textView1 = 2131034113;
+			// aapt resource value: 0x7f06000a
+			public const int spinnerActivities = 2131099658;
 			
-			// aapt resource value: 0x7f050009
-			public const int textView2 = 2131034121;
+			// aapt resource value: 0x7f060008
+			public const int spinnerCustomers = 2131099656;
 			
-			// aapt resource value: 0x7f050014
-			public const int versionInfo = 2131034132;
+			// aapt resource value: 0x7f060009
+			public const int spinnerProjects = 2131099657;
+			
+			// aapt resource value: 0x7f060006
+			public const int textView1 = 2131099654;
+			
+			// aapt resource value: 0x7f060001
+			public const int textView2 = 2131099649;
+			
+			// aapt resource value: 0x7f06000b
+			public const int toggleButton1 = 2131099659;
+			
+			// aapt resource value: 0x7f060003
+			public const int versionInfo = 2131099651;
 			
 			static Id()
 			{
@@ -130,13 +142,16 @@ namespace TimeTracker
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int Main = 2130903040;
+			public const int About = 2130903040;
 			
 			// aapt resource value: 0x7f030001
-			public const int Settings = 2130903041;
+			public const int Main = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int SqlLayout = 2130903042;
+			public const int Settings = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int SqlLayout = 2130903043;
 			
 			static Layout()
 			{
@@ -170,6 +185,9 @@ namespace TimeTracker
 			// aapt resource value: 0x7f040000
 			public const int app_name = 2130968576;
 			
+			// aapt resource value: 0x7f040002
+			public const int author_name = 2130968578;
+			
 			// aapt resource value: 0x7f040001
 			public const int code_name = 2130968577;
 			
@@ -179,6 +197,25 @@ namespace TimeTracker
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Style
+		{
+			
+			// aapt resource value: 0x7f050001
+			public const int MyTheme = 2131034113;
+			
+			// aapt resource value: 0x7f050000
+			public const int MyTheme_Base = 2131034112;
+			
+			static Style()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Style()
 			{
 			}
 		}

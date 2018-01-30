@@ -71,6 +71,10 @@ namespace TimeTracker
                     strApiPassword = password.Text.Trim(charsToTrim);
                     ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
+                    // Local Prefences incase the user reset theier user
+                    ap.saveAccessKey("CurrentCustomerInTimer", "0");
+                    ap.saveAccessKey("CurrentProjectInTimer", "0");
+                    ap.saveAccessKey("CurrentActivityInTimer", "0");
                     // Connect to the Soap Service here for Auth
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
@@ -90,15 +94,17 @@ namespace TimeTracker
                         ap.saveAccessKey("APIKEY", strApiKey, true);
                         db.CreateTable<Customer>();
                         db.DeleteAll<Customer>();
-                        ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
-
+                        //ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
+                        populateCustomerTable(strApiUrl, strApiKey, db);
                         db.CreateTable<Project>();
                         db.DeleteAll<Project>();
-                        ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+                        //ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+                        populateProjectTable(strApiUrl, strApiKey, db);
                     }else{
                         Toast.MakeText(ApplicationContext, "Log in failed", ToastLength.Short).Show();
                         return;
                     }
+                    db.Close();
                     StartActivity(new Intent(Application.Context, typeof(MainActivity)));
 
 
@@ -110,7 +116,6 @@ namespace TimeTracker
                 }
             };
 
-            getVersionInfo();
 
             Button sql_button = FindViewById<Button>(Resource.Id.btn_view_data);
             sql_button.Click += delegate
@@ -125,16 +130,6 @@ namespace TimeTracker
             };
         }
 
-        //get the current version number and name
-        private void getVersionInfo()
-        {
-            String versionName = "";
-            int versionCode = -1;
-            versionCode = Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionCode;
-            versionName =  Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionName;
-            TextView textViewVersionInfo = FindViewById<TextView>(Resource.Id.versionInfo);
-            textViewVersionInfo.Append(String.Format("\nVersion number:{0}.{1}", versionName, versionCode));
-        }
  
         /// <summary>
         /// Populates the customer table.
@@ -176,7 +171,6 @@ namespace TimeTracker
                         }
                     }
                     db.Insert(newCustomer);
-
                 }
             }
             finally
@@ -290,7 +284,6 @@ namespace TimeTracker
                             }
                         }
                         db.Insert(newActivity);
-
                     }
                 }
             }
