@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:rowCount="10"
     android:columnCount="2"
-    android:padding="5dp"
     android:textAppearance="?android:attr/textAppearanceSmall">
     <TextView
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -15,7 +14,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Current Active Recording Data" />
     <TextView
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView1"
@@ -44,12 +43,15 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:spinnerMode="dialog" />
-    <Button
-        android:text="Start"
-        android:id="@+id/btn_start" />
-    <Button
-        android:text="Stop"
-        android:id="@+id/btn_stop" />
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:textOff="Start Timer"
+        android:textOn="Stop Timer"
+        android:ems="6"
+        android:lines="2" />
     <Button
         android:text="Settings"
         android:layout_width="match_parent"
@@ -62,11 +64,11 @@
         android:id="@+id/textView2"
         android:layout_columnSpan="2" />
     <RelativeLayout
-        android:minWidth="25px"
-        android:minHeight="25px"
+        android:layout_gravity="bottom"
         android:id="@+id/relativeLayout1" />
     <Button
         android:text="About TimeTracker"
-        android:id="@+id/Button"
-        android:layout_gravity="bottom" />
+        android:id="@+id/btn_about"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal" />
 </GridLayout>

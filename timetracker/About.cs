@@ -7,7 +7,7 @@ using Android.Widget;
 
 namespace TimeTracker.Resources
 {
-    [Activity(Label = "About", MainLauncher = true)]
+    [Activity(Label = "About", MainLauncher = false)]
     public class About : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -26,7 +26,6 @@ namespace TimeTracker.Resources
         {
             String versionName = "";
             int versionCode = -1;
-            String author;
             versionCode = Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionCode;
             versionName = Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionName;
                 

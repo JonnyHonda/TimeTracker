@@ -71,6 +71,10 @@ namespace TimeTracker
                     strApiPassword = password.Text.Trim(charsToTrim);
                     ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
+                    // Local Prefences incase the user reset theier user
+                    ap.saveAccessKey("CurrentCustomerInTimer", "0");
+                    ap.saveAccessKey("CurrentProjectInTimer", "0");
+                    ap.saveAccessKey("CurrentActivityInTimer", "0");
                     // Connect to the Soap Service here for Auth
                     Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                     Service.AllowAutoRedirect = true;
@@ -90,15 +94,17 @@ namespace TimeTracker
                         ap.saveAccessKey("APIKEY", strApiKey, true);
                         db.CreateTable<Customer>();
                         db.DeleteAll<Customer>();
-                        ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
-
+                        //ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
+                        populateCustomerTable(strApiUrl, strApiKey, db);
                         db.CreateTable<Project>();
                         db.DeleteAll<Project>();
-                        ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+                        //ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+                        populateProjectTable(strApiUrl, strApiKey, db);
                     }else{
                         Toast.MakeText(ApplicationContext, "Log in failed", ToastLength.Short).Show();
                         return;
                     }
+                    db.Close();
                     StartActivity(new Intent(Application.Context, typeof(MainActivity)));
 
 
@@ -165,7 +171,6 @@ namespace TimeTracker
                         }
                     }
                     db.Insert(newCustomer);
-
                 }
             }
             finally
@@ -279,7 +284,6 @@ namespace TimeTracker
                             }
                         }
                         db.Insert(newActivity);
-
                     }
                 }
             }
