@@ -22,6 +22,7 @@ namespace TimeTracker
     {
         public bool debug = false;
         public string strEntryId;
+        public string strCustomerID;
         public string strProjectID;
         public string strActivityID;
         public bool startButtonState;
@@ -69,7 +70,6 @@ namespace TimeTracker
 
             SetSupportActionBar(toolbar);
             SupportActionBar.Title = GetString(Resource.String.app_name);
-            //SetActionBar(toolbar);
 
             string dbPath = System.IO.Path.Combine(
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -86,21 +86,6 @@ namespace TimeTracker
             strApiPassword = ap.getAccessKey("PASSWORD");
             strApiKey = ap.getAccessKey("APIKEY");
 
-            try
-            {
-                CurrentCustomerInTimer = Convert.ToInt16(ap.getAccessKey("CurrentCustomerInTimer"));
-                CurrentProjectInTimer = Convert.ToInt16(ap.getAccessKey("CurrentProjectInTimer"));
-                CurrentActivityInTimer = Convert.ToInt16(ap.getAccessKey("CurrentActivityInTimer"));
-            }
-            catch
-            {
-                CurrentCustomerInTimer = 0;
-                ap.saveAccessKey("CurrentCustomerInTimer", "0");
-                CurrentProjectInTimer = 0;
-                ap.saveAccessKey("CurrentProjectInTimer", "0");
-                CurrentActivityInTimer = 0;
-                ap.saveAccessKey("CurrentActivityInTimer", "0");
-            }
 
             // Looks like we don't have any setting stored so we need to go to the Setting Page
             if (string.IsNullOrEmpty(strApiUrl) || debug)
@@ -138,13 +123,12 @@ namespace TimeTracker
                     }
                 }
 
-                PopulateCustomersSpinner();
                 ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                 // Let's get the data for any current active recording and update the start/stop button states
                 try
                 {
-                    int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
-                    if (countofRecodrings == 0)
+                    int countOfRecordings = getActiveRecording(strApiUrl, strApiKey);
+                    if (countOfRecordings == 0)
                     {
                         togglebutton.Checked = false;
                         RunUpdateLoopState = false;
@@ -165,7 +149,7 @@ namespace TimeTracker
                     mesg.Show();
                 }
 
-
+                do_refresh();
 
                 /**
                  * 
@@ -229,28 +213,38 @@ namespace TimeTracker
                 Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
                 Service.AllowAutoRedirect = true;
                 //Get details of the active recording
-                object responseObject;
-                responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
-
-                // toggle button states
-                RunUpdateLoopState = true;
-                Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                // need to get the new active recording
-                try
+                // need to check if we are out of sync and tere is already an active recording
+                int count = getActiveRecording(strApiUrl, strApiKey);
+                if (count == 0)
                 {
-                    int x = getActiveRecording(strApiUrl, strApiKey);
-                }
-                catch (Exception ex)
-                {
-                    Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+                    object responseObject;
+                    responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
+
+                    // toggle button states
+                    RunUpdateLoopState = true;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                    // need to get the new active recording
+                    try
+                    {
+                        int x = getActiveRecording(strApiUrl, strApiKey);
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+
+                    }
+                    Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
+                    do_refresh();
+                }else{
+                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Short).Show();
+                    do_refresh();
                 }
             }
             catch (Exception ex)
             {
                 Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
             }
-            Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
         }
 
         /// <summary>
@@ -263,7 +257,7 @@ namespace TimeTracker
             switch (item.ItemId)
             {
                 case Resource.Id.menu_refresh:
-                    getActiveRecording(strApiUrl, strApiKey);
+                    do_refresh();
                     break;
                 case Resource.Id.menu_about:
                     StartActivity(typeof(About));
@@ -273,6 +267,12 @@ namespace TimeTracker
                     break;
             }
             return base.OnOptionsItemSelected(item);
+        }
+
+        private void do_refresh()
+        {
+            getActiveRecording(strApiUrl, strApiKey);
+            PopulateCustomersSpinner();
         }
 
         /// <summary>
@@ -297,8 +297,6 @@ namespace TimeTracker
 
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
             CurrentCustomerInTimer = e.Position;
-            ap.saveAccessKey("CurrentCustomerInTimer", CurrentCustomerInTimer.ToString());
-
         }
 
 
@@ -312,7 +310,7 @@ namespace TimeTracker
 
             try
             {
-                // Clear the custoer lookup table
+                // Clear the customer lookup table
                 CustomerLookupList.Clear();
                 var customers = db.Query<Customer>("SELECT * FROM Customer");
                 int count = customers.Count;
@@ -322,23 +320,18 @@ namespace TimeTracker
                     int index = 0;
                     foreach (var customer in customers)
                     {
+                        // Add item to the data adapter
                         customeradapter.Add(customer.Name);
+                        // Add items to the lookup list by adding an index and the kimai customerID
                         CustomerLookupList.Add(index++, customer.CustomerID);
                     }
+                    // Apply the data adapter to the spinner
                     CustomersSpinner.Adapter = customeradapter;
                 }
-                if (Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")) > count)
-                {
 
-                    CustomersSpinner.SetSelection(0);
-                    ap.saveAccessKey("CurrentCustomerInTimer", "0");
-                    ap.saveAccessKey("CurrentProjectInTimer", "0");
-                    ap.saveAccessKey("CurrentActivityInTimer", "0");
-                }
-                else
-                {
-                    CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
-                }
+                string c = KeyByValue(CustomerLookupList, Convert.ToUInt16(strCustomerID));
+                CustomersSpinner.SetSelection(Convert.ToInt16(c));
+
             }
             catch (Exception ex)
             {
@@ -374,17 +367,8 @@ namespace TimeTracker
                     ProjectsSpinner.Adapter = projectadapter;
                 }
 
-                if (Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")) >= count)
-                {
-                    ProjectsSpinner.SetSelection(0);
-                    ap.saveAccessKey("CurrentProjectInTimer", "0");
-                    ap.saveAccessKey("CurrentActivityInTimer", "0");
-                }
-                else
-                {
-                    ProjectsSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")));
-
-                }
+                string p = KeyByValue(ProjectLookupList, Convert.ToUInt16(strProjectID));
+                ProjectsSpinner.SetSelection(Convert.ToInt16(p));
             }
             catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
         }
@@ -430,16 +414,8 @@ namespace TimeTracker
                     ActivitiesSpinner.Adapter = activityadapter;
                 }
 
-                if (Convert.ToUInt16(ap.getAccessKey("CurrentActivityInTimer")) > count)
-                {
-                    ActivitiesSpinner.SetSelection(0);
-                    ap.saveAccessKey("CurrentActivityInTimer", "0");
-                }
-                else
-                {
-                    ActivitiesSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentActivityInTimer")));
-
-                }
+                string a = KeyByValue(ActivitiesLookupList, Convert.ToUInt16(strActivityID));
+                ActivitiesSpinner.SetSelection(Convert.ToInt16(a));
             }
             catch (Exception ex)
             {
@@ -541,6 +517,7 @@ namespace TimeTracker
         void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
         {
             ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
+            Spinner CustomerSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
 
             if (recordingNodeXml.Count > 0)
             {
@@ -555,50 +532,20 @@ namespace TimeTracker
                     switch (node["key"].InnerText)
                     {
                         case "timeEntryId":
-                            //     projectText.Append((node["value"].InnerText));
                             strEntryId = node["value"].InnerText;
                             break;
 
                         case "customerID":
-                            projectText.Append("(C:");
-                            projectText.Append((node["value"].InnerText));
-                            projectText.Append(")");
-
-                            //CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
-                            //CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
-                            //CurrentCustomerInTimer = GetCustomerIndexByKimaiId(Convert.ToUInt16(node["value"].InnerText));
-                            string c = KeyByValue(CustomerLookupList, Convert.ToUInt16((node["value"].InnerText)));
-                            ap.saveAccessKey("CustomerLookupList", c);
-                            //CurrentCustomerInTimer = c;
-                            //CustomersSpinner.SetSelection(c);
+                            strCustomerID = node["value"].InnerText;
+                            CustomerSpinner.SetSelection(Convert.ToUInt16(node["value"].InnerText));
                             break;
 
                         case "projectID":
-                            //projectText.Append((node["value"].InnerText));
-                            //projectText.Append(System.Environment.NewLine);
                             strProjectID = node["value"].InnerText;
-                            projectText.Append("(P:");
-                            projectText.Append((node["value"].InnerText));
-                            projectText.Append(")");
-                            //   CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
-                            string p = KeyByValue(ProjectLookupList, Convert.ToUInt16((node["value"].InnerText)));
-                            ap.saveAccessKey("CurrentProjectInTimer", p);
-                            //CurrentProjectInTimer = p;
-                            //ProjectsSpinner.SetSelection(p);
                             break;
 
                         case "activityID":
-                            // projectText.Append((node["value"].InnerText));
-                            // projectText.Append(System.Environment.NewLine);
                             strActivityID = node["value"].InnerText;
-                            projectText.Append("(A:");
-                            projectText.Append((node["value"].InnerText));
-                            projectText.Append(")");
-                            //    CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
-                            string a = KeyByValue(ActivitiesLookupList, Convert.ToUInt16((node["value"].InnerText)));
-                            //CurrentActivityInTimer = a;
-                            ap.saveAccessKey("CurrentActivityInTimer", a);
-                            //ActivitiesSpinner.SetSelection(a);
                             break;
 
                         case "start":
@@ -617,15 +564,10 @@ namespace TimeTracker
                             }
                             break;
                         case "end":
-                            //    projectText.Append((node["value"].InnerText));
                             break;
                         case "duration":
-                            //projectText.Append((node["value"].InnerText));
-                            //projectText.Append(System.Environment.NewLine);
-                            // DurationCount = Convert.ToInt16(node["value"].InnerText);
                             break;
                         case "servertime":
-                            //   projectText.Append((node["value"].InnerText));
                             break;
 
                         case "customerName":
@@ -645,6 +587,10 @@ namespace TimeTracker
                             break;
 
                     }
+                    EditText comment = FindViewById<EditText>(Resource.Id.editComments);
+                    comment.Text =String.Format("{0} - {1} - {2}", strCustomerID, strProjectID, strActivityID);
+
+
                 }
             }
             else

@@ -17,7 +17,7 @@ namespace TimeTracker
     {
         public bool debug = false;
         public bool HoldState = true;
- 
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -41,7 +41,7 @@ namespace TimeTracker
             // Save the Settings
             Button save_button = FindViewById<Button>(Resource.Id.btn_settings);
             Button cancel_button = FindViewById<Button>(Resource.Id.btn_cancel);
-       
+
             string dbPath = System.IO.Path.Combine(
                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                 "localkimaidata.db3");
@@ -71,7 +71,7 @@ namespace TimeTracker
                     strApiPassword = password.Text.Trim(charsToTrim);
                     ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
-                    // Local Prefences incase the user reset theier user
+                    // Local Preferences incase the user reset thier user
                     ap.saveAccessKey("CurrentCustomerInTimer", "0");
                     ap.saveAccessKey("CurrentProjectInTimer", "0");
                     ap.saveAccessKey("CurrentActivityInTimer", "0");
@@ -100,7 +100,9 @@ namespace TimeTracker
                         db.DeleteAll<Project>();
                         //ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
                         populateProjectTable(strApiUrl, strApiKey, db);
-                    }else{
+                    }
+                    else
+                    {
                         Toast.MakeText(ApplicationContext, "Log in failed", ToastLength.Short).Show();
                         return;
                     }
@@ -130,7 +132,7 @@ namespace TimeTracker
             };
         }
 
- 
+
         /// <summary>
         /// Populates the customer table.
         /// </summary>
@@ -230,7 +232,8 @@ namespace TimeTracker
                 // Don;t thread this as it requires get Projects to complete 
                 populateActivityTable(strApiUrl, strApiKey, db);
             }
-            finally{
+            finally
+            {
 
             }
         }
@@ -258,7 +261,7 @@ namespace TimeTracker
                 {
                     //Get details of the active recording
                     object responseObject = Service.getTasks(strApiKey, project.ProjectID);
-                                                             
+
                     XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
 
                     XmlNodeList activityNodeXml;
@@ -287,7 +290,7 @@ namespace TimeTracker
                     }
                 }
             }
-            finally 
+            finally
             {
 
             }
