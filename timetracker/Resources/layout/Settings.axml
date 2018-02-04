@@ -27,7 +27,8 @@
         android:layout_gravity="fill_horizontal"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:hint="https://kimai.tsgapis.com" />
+        android:hint="https://kimai.tsgapis.com"
+        android:autoText="false" />
 <!-- Row 3 -->
     <TextView
         android:id="@+id/lbl_username"
