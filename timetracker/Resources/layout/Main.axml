@@ -51,7 +51,7 @@
         android:spinnerMode="dialog" />
     <EditText
         android:id="@+id/editComments"
-        android:hint="Comments"
+        android:hint="Comments (not implemented)"
         android:layout_width="match_parent"
         android:maxLines="4"
         android:minLines="4"

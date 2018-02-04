@@ -236,7 +236,9 @@ namespace TimeTracker
                     }
                     Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
                     do_refresh();
-                }else{
+                }
+                else
+                {
                     Toast.MakeText(this, "There appears to be an active recording", ToastLength.Short).Show();
                     do_refresh();
                 }
@@ -585,12 +587,7 @@ namespace TimeTracker
                             projectText.Append("Activity:");
                             projectText.Append((node["value"].InnerText));
                             break;
-
                     }
-                    EditText comment = FindViewById<EditText>(Resource.Id.editComments);
-                    comment.Text =String.Format("{0} - {1} - {2}", strCustomerID, strProjectID, strActivityID);
-
-
                 }
             }
             else
