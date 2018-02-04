@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:local="http://schemas.android.com/apk/res-auto">
+
+    <item
+       android:id="@+id/menu_refresh"
+        android:icon="@mipmap/ic_action_autorenew"
+       local:showAsAction="always"
+       android:title="Refresh" />
+    <item
+       android:id="@+id/menu_about"
+       android:icon="@mipmap/ic_launcher"
+       local:showAsAction="never"
+       android:title="About" />
+  <item
+       android:id="@+id/menu_settings"
+       android:icon="@mipmap/ic_action_settings"
+       local:showAsAction="never"
+       android:title="Settings" />
+
+</menu>

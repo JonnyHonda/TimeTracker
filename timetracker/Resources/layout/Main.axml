@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:rowCount="10"
+    android:rowCount="16"
     android:columnCount="2"
     android:textAppearance="?android:attr/textAppearanceSmall">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     <TextView
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
@@ -43,6 +49,20 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:spinnerMode="dialog" />
+    <EditText
+        android:id="@+id/editComments"
+        android:hint="Comments"
+        android:layout_width="match_parent"
+        android:maxLines="4"
+        android:minLines="4"
+        android:layout_columnSpan="2"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
+    <TextView
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textView2"
+        android:layout_columnSpan="2" />
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_columnSpan="2"
@@ -52,23 +72,4 @@
         android:textOn="Stop Timer"
         android:ems="6"
         android:lines="2" />
-    <Button
-        android:text="Settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_main"
-        android:layout_columnSpan="2" />
-    <TextView
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textView2"
-        android:layout_columnSpan="2" />
-    <RelativeLayout
-        android:layout_gravity="bottom"
-        android:id="@+id/relativeLayout1" />
-    <Button
-        android:text="About TimeTracker"
-        android:id="@+id/btn_about"
-        android:layout_columnSpan="2"
-        android:layout_gravity="center_horizontal" />
 </GridLayout>

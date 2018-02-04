@@ -5,6 +5,10 @@ using System.Xml;
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Android.Support.V7.App;
+using Toolbar = Android.Support.V7.Widget.Toolbar;
+
+using Android.Views;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
@@ -14,7 +18,7 @@ using static TimeTracker.KimaiDatadase;
 namespace TimeTracker
 {
     [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
-    public class MainActivity : Activity
+    public class MainActivity : AppCompatActivity
     {
         public bool debug = false;
         public string strEntryId;
@@ -31,10 +35,27 @@ namespace TimeTracker
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
 
+        /// <summary>
+        /// The customer lookup list.
+        /// The Look up list hold an two integers <index><customerId>
+        /// </summary>
         public Dictionary<int, int> CustomerLookupList = new Dictionary<int, int>();
+        /// <summary>
+        /// The project lookup list.
+        /// The Look up list hold an two integers <index><projectId>
+        /// </summary>
         public Dictionary<int, int> ProjectLookupList = new Dictionary<int, int>();
+        /// <summary>
+        /// The activities lookup list.
+        /// The Look up list hold an two integers <index><activityId>
+        /// </summary>
         public Dictionary<int, int> ActivitiesLookupList = new Dictionary<int, int>();
         public SQLiteConnection db;
+        public string strApiUrl;
+        public string strApiUserName;
+        public string strApiPassword;
+        public string strApiKey;
+
         AppPreferences ap;
         //string apiKey;
         protected override void OnCreate(Bundle savedInstanceState)
@@ -43,7 +64,12 @@ namespace TimeTracker
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
 
+
+            SetSupportActionBar(toolbar);
+            SupportActionBar.Title = GetString(Resource.String.app_name);
+            //SetActionBar(toolbar);
 
             string dbPath = System.IO.Path.Combine(
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
@@ -55,23 +81,25 @@ namespace TimeTracker
             // Fetch App Prefs
             Context mContext = Android.App.Application.Context;
             ap = new AppPreferences(mContext);
-            string strApiUrl = ap.getAccessKey("URL");
-            string strApiUserName = ap.getAccessKey("USERNAME");
-            string strApiPassword = ap.getAccessKey("PASSWORD");
-            string strApiKey = ap.getAccessKey("APIKEY");
+            strApiUrl = ap.getAccessKey("URL");
+            strApiUserName = ap.getAccessKey("USERNAME");
+            strApiPassword = ap.getAccessKey("PASSWORD");
+            strApiKey = ap.getAccessKey("APIKEY");
 
             try
             {
                 CurrentCustomerInTimer = Convert.ToInt16(ap.getAccessKey("CurrentCustomerInTimer"));
                 CurrentProjectInTimer = Convert.ToInt16(ap.getAccessKey("CurrentProjectInTimer"));
                 CurrentActivityInTimer = Convert.ToInt16(ap.getAccessKey("CurrentActivityInTimer"));
-            }catch{
+            }
+            catch
+            {
                 CurrentCustomerInTimer = 0;
-                ap.saveAccessKey("CurrentCustomerInTimer","0");
+                ap.saveAccessKey("CurrentCustomerInTimer", "0");
                 CurrentProjectInTimer = 0;
-                ap.saveAccessKey("CurrentProjectInTimer","0");
+                ap.saveAccessKey("CurrentProjectInTimer", "0");
                 CurrentActivityInTimer = 0;
-                ap.saveAccessKey("CurrentActivityInTimer","0");
+                ap.saveAccessKey("CurrentActivityInTimer", "0");
             }
 
             // Looks like we don't have any setting stored so we need to go to the Setting Page
@@ -118,19 +146,16 @@ namespace TimeTracker
                     int countofRecodrings = getActiveRecording(strApiUrl, strApiKey);
                     if (countofRecodrings == 0)
                     {
-
-                        //startbutton.Enabled = true; 
                         togglebutton.Checked = false;
                         RunUpdateLoopState = false;
-                        //stopbutton.Enabled = false;
+
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
                     else
                     {
-                        //startbutton.Enabled = false; 
                         togglebutton.Checked = true;
                         RunUpdateLoopState = true;
-                        //stopbutton.Enabled = true;
+
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                     }
                 }
@@ -141,93 +166,124 @@ namespace TimeTracker
                 }
 
 
-                /** 
-                    OnCLick event to Launch the settings activity
-                **/
-                Button button = FindViewById<Button>(Resource.Id.btn_main);
-                button.Click += delegate
-                {
-                    StartActivity(typeof(Settings));
-                };
-
-                /** 
-                     OnCLick event to Launch the About activity
-                **/
-                Button about_button = FindViewById<Button>(Resource.Id.btn_about);
-                about_button.Click += delegate
-                {
-                    StartActivity(typeof(About));
-                };
 
                 /**
                  * 
                  * OnClick events for toggle button
                 **/
-
-
-                togglebutton.Click += (o, e) => {
+                togglebutton.Click += (o, e) =>
+                {
                     // Perform action on clicks
                     if (togglebutton.Checked)
-                    {
-                        try
-                        {
-                            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                            Service.AllowAutoRedirect = true;
-                            //Get details of the active recording
-                            object responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
-                            // toggle button states
-                            RunUpdateLoopState = true;
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                            // need to get the new active recording
-                            try
-                            {
-                                int x = getActiveRecording(strApiUrl, strApiKey);
-                            }
-                            catch (Exception ep)
-                            {
-                                throw (ep);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            throw (ex);
-                        }
-                        Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
-                    }
+                        StartTimer();
                     else
                     {
-                        try
-                        {
-                            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                            Service.AllowAutoRedirect = true;
-                            // Toggle button status
-                            RunUpdateLoopState = false;
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                            //Get details of the active recording
-                            object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
-
-                            // need to get the new active recording, incase it did not stop
-                            try
-                            {
-                                int x = getActiveRecording(strApiUrl, strApiKey);
-                            }
-                            catch (Exception el)
-                            {
-                                throw (el);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Toast mesg = Toast.MakeText(this, ex.Message, ToastLength.Long);
-                            mesg.Show();
-                        }
-                        Toast.MakeText(this, "Timer Stopped", ToastLength.Short).Show();
+                        StopTimer();
                     }
                 };
             }
 
+
+        }
+
+        /// <summary>
+        /// Stops the timer.
+        /// </summary>
+        private void StopTimer()
+        {
+            try
+            {
+                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                Service.AllowAutoRedirect = true;
+                // Toggle button status
+                RunUpdateLoopState = false;
+                Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                //Get details of the active recording
+                object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
+
+                // need to get the new active recording, incase it did not stop
+                try
+                {
+                    int x = getActiveRecording(strApiUrl, strApiKey);
+                }
+                catch (Exception ex)
+                {
+                    Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+            }
+            Toast.MakeText(this, "Timer Stopped", ToastLength.Short).Show();
+        }
+
+        /// <summary>
+        /// Starts the timer.
+        /// </summary>
+        private void StartTimer()
+        {
+            try
+            {
+                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                Service.AllowAutoRedirect = true;
+                //Get details of the active recording
+                object responseObject;
+                responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
+
+                // toggle button states
+                RunUpdateLoopState = true;
+                Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
+
+                // need to get the new active recording
+                try
+                {
+                    int x = getActiveRecording(strApiUrl, strApiKey);
+                }
+                catch (Exception ex)
+                {
+                    Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+            }
+            Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
+        }
+
+        /// <summary>
+        /// Ons the options item selected.
+        /// </summary>
+        /// <returns><c>true</c>, if options item selected was oned, <c>false</c> otherwise.</returns>
+        /// <param name="item">Item.</param>
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.menu_refresh:
+                    getActiveRecording(strApiUrl, strApiKey);
+                    break;
+                case Resource.Id.menu_about:
+                    StartActivity(typeof(About));
+                    break;
+                case Resource.Id.menu_settings:
+                    StartActivity(typeof(Settings));
+                    break;
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+
+        /// <summary>
+        /// Ons the create options menu.
+        /// </summary>
+        /// <returns><c>true</c>, if create options menu was oned, <c>false</c> otherwise.</returns>
+        /// <param name="menu">Menu.</param>
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.top_menus, menu);
+            return base.OnCreateOptionsMenu(menu);
         }
 
         /// <summary>
@@ -241,7 +297,7 @@ namespace TimeTracker
 
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
             CurrentCustomerInTimer = e.Position;
-            ap.saveAccessKey("CurrentCustomerInTimer",CurrentCustomerInTimer.ToString());
+            ap.saveAccessKey("CurrentCustomerInTimer", CurrentCustomerInTimer.ToString());
 
         }
 
@@ -256,10 +312,11 @@ namespace TimeTracker
 
             try
             {
+                // Clear the custoer lookup table
                 CustomerLookupList.Clear();
                 var customers = db.Query<Customer>("SELECT * FROM Customer");
                 int count = customers.Count;
-                if ( count > 0)
+                if (count > 0)
                 {
                     var customeradapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem);
                     int index = 0;
@@ -272,16 +329,16 @@ namespace TimeTracker
                 }
                 if (Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")) > count)
                 {
-                    
-                        CustomersSpinner.SetSelection(0);
-                        ap.saveAccessKey("CurrentCustomerInTimer", "0");
-                        ap.saveAccessKey("CurrentProjectInTimer", "0");
-                        ap.saveAccessKey("CurrentActivityInTimer", "0");
-                    }else{
-                        CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
-                    }
 
-
+                    CustomersSpinner.SetSelection(0);
+                    ap.saveAccessKey("CurrentCustomerInTimer", "0");
+                    ap.saveAccessKey("CurrentProjectInTimer", "0");
+                    ap.saveAccessKey("CurrentActivityInTimer", "0");
+                }
+                else
+                {
+                    CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
+                }
             }
             catch (Exception ex)
             {
@@ -322,16 +379,14 @@ namespace TimeTracker
                     ProjectsSpinner.SetSelection(0);
                     ap.saveAccessKey("CurrentProjectInTimer", "0");
                     ap.saveAccessKey("CurrentActivityInTimer", "0");
-                }else{
-                 ProjectsSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")));
+                }
+                else
+                {
+                    ProjectsSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentProjectInTimer")));
 
                 }
-    
-               
             }
-
             catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); }
-
         }
 
 
@@ -386,7 +441,9 @@ namespace TimeTracker
 
                 }
             }
-            catch (Exception ex) { Toast.MakeText(this, ex.Message, ToastLength.Long).Show(); 
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
             }
         }
 
@@ -410,9 +467,10 @@ namespace TimeTracker
 
                 if (RunUpdateLoopState)
                 {
-                    int  hours = time.Hours;
-                    if (time.Days > 0) {
-                        hours = (time.Days * 24) + hours; 
+                    int hours = time.Hours;
+                    if (time.Days > 0)
+                    {
+                        hours = (time.Days * 24) + hours;
                     }
 
                     string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
@@ -462,7 +520,19 @@ namespace TimeTracker
             }
         }
 
-
+        public static string KeyByValue(Dictionary<int, int> dict, int val)
+        {
+            int key = 0;
+            foreach (KeyValuePair<int, int> pair in dict)
+            {
+                if (pair.Value == val)
+                {
+                    key = pair.Key;
+                    break;
+                }
+            }
+            return key.ToString();
+        }
         /// <summary>
         /// Currents the project.
         /// </summary>
@@ -470,10 +540,15 @@ namespace TimeTracker
         /// <param name="projectText">Project text.</param>
         void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
         {
+            ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
+
             if (recordingNodeXml.Count > 0)
             {
                 //TimerViewer.Text = "00:00:00";
                 projectText.Text = "";
+                RunUpdateLoopState = true;
+                togglebutton.Checked = true;
+
                 foreach (XmlNode node in recordingNodeXml)
                 {
                     //Fetch the Node and Attribute values.
@@ -483,18 +558,49 @@ namespace TimeTracker
                             //     projectText.Append((node["value"].InnerText));
                             strEntryId = node["value"].InnerText;
                             break;
-                        case "activityID":
-                            // projectText.Append((node["value"].InnerText));
-                            // projectText.Append(System.Environment.NewLine);
-                            strActivityID = node["value"].InnerText;
-                            //    CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
+
+                        case "customerID":
+                            projectText.Append("(C:");
+                            projectText.Append((node["value"].InnerText));
+                            projectText.Append(")");
+
+                            //CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
+                            //CustomersSpinner.SetSelection(Convert.ToUInt16(ap.getAccessKey("CurrentCustomerInTimer")));
+                            //CurrentCustomerInTimer = GetCustomerIndexByKimaiId(Convert.ToUInt16(node["value"].InnerText));
+                            string c = KeyByValue(CustomerLookupList, Convert.ToUInt16((node["value"].InnerText)));
+                            ap.saveAccessKey("CustomerLookupList", c);
+                            //CurrentCustomerInTimer = c;
+                            //CustomersSpinner.SetSelection(c);
                             break;
+
                         case "projectID":
                             //projectText.Append((node["value"].InnerText));
                             //projectText.Append(System.Environment.NewLine);
                             strProjectID = node["value"].InnerText;
-                         //   CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
+                            projectText.Append("(P:");
+                            projectText.Append((node["value"].InnerText));
+                            projectText.Append(")");
+                            //   CurrentProjectInTimer = Convert.ToUInt16(strProjectID);
+                            string p = KeyByValue(ProjectLookupList, Convert.ToUInt16((node["value"].InnerText)));
+                            ap.saveAccessKey("CurrentProjectInTimer", p);
+                            //CurrentProjectInTimer = p;
+                            //ProjectsSpinner.SetSelection(p);
                             break;
+
+                        case "activityID":
+                            // projectText.Append((node["value"].InnerText));
+                            // projectText.Append(System.Environment.NewLine);
+                            strActivityID = node["value"].InnerText;
+                            projectText.Append("(A:");
+                            projectText.Append((node["value"].InnerText));
+                            projectText.Append(")");
+                            //    CurrentActivityInTimer = Convert.ToUInt16(strActivityID);
+                            string a = KeyByValue(ActivitiesLookupList, Convert.ToUInt16((node["value"].InnerText)));
+                            //CurrentActivityInTimer = a;
+                            ap.saveAccessKey("CurrentActivityInTimer", a);
+                            //ActivitiesSpinner.SetSelection(a);
+                            break;
+
                         case "start":
                             //     projectText.Append((node["value"].InnerText));
                             UInt32 StartTimeInUnixTime = Convert.ToUInt32(node["value"].InnerText);
@@ -521,10 +627,7 @@ namespace TimeTracker
                         case "servertime":
                             //   projectText.Append((node["value"].InnerText));
                             break;
-                        case "customerID":
-                            //    projectText.Append((node["value"].InnerText));
-                           // CurrentCustomerInTimer = Convert.ToUInt16((node["value"].InnerText));
-                            break;
+
                         case "customerName":
                             projectText.Append("Customer: ");
                             projectText.Append((node["value"].InnerText));
@@ -546,6 +649,8 @@ namespace TimeTracker
             }
             else
             {
+                RunUpdateLoopState = false;
+                togglebutton.Checked = false;
                 projectText.Text = "No Active Recording.";
                 TimerViewer.Text = "00:00:00";
 

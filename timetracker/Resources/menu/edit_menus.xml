@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:local="http://schemas.android.com/apk/res-auto">
+  <item
+       android:id="@+id/menu_cut"
+       android:icon="@mipmap/ic_action_content_cut"
+       local:showAsAction="ifRoom"
+       android:title="Cut" />
+  <item
+       android:id="@+id/menu_copy"
+       android:icon="@mipmap/ic_action_content_copy"
+       local:showAsAction="ifRoom"
+       android:title="Copy" />
+  <item
+       android:id="@+id/menu_paste"
+       android:icon="@mipmap/ic_action_content_paste"
+       local:showAsAction="ifRoom"
+       android:title="Paste" />
+</menu>
