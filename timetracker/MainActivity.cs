@@ -183,13 +183,13 @@ namespace TimeTracker
                 RunUpdateLoopState = false;
                 Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
 
-                //Get details of the active recording
+                //Stop the current recording based on the entryId we are holding.
                 object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
 
                 // need to get the new active recording, incase it did not stop
                 try
                 {
-                    int x = getActiveRecording(strApiUrl, strApiKey);
+                    do_refresh();
                 }
                 catch (Exception ex)
                 {
@@ -239,7 +239,10 @@ namespace TimeTracker
                 }
                 else
                 {
-                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Short).Show();
+                    // We did not start a new recording we just switvhed to the active one.
+                    //Todo: this has big repercussions, as many devices could start mnay recordings with out stopping any exiting ones
+                    // If this proves to be a problem the best approach may be just to exit and warn the user multiple timers are running.
+                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Long).Show();
                     do_refresh();
                 }
             }
@@ -434,7 +437,7 @@ namespace TimeTracker
 
 
         /// <summary>
-        /// Runs the update loop. This loop runs foreve, and updates the clock ever second provided that the RunUpdateLoopState in true
+        /// Runs the update loop. This loop runs forever, and updates the clock every second provided that the RunUpdateLoopState is true
         /// </summary>
         private async void RunUpdateLoop()
         {
@@ -533,7 +536,7 @@ namespace TimeTracker
                     //Fetch the Node and Attribute values.
                     switch (node["key"].InnerText)
                     {
-                        case "timeEntryId":
+                        case "timeEntryID":
                             strEntryId = node["value"].InnerText;
                             break;
 
