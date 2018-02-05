@@ -187,6 +187,13 @@
       <UpdateFromURL>https://kimai.tsgapis.com/core/soap.php?wsdl</UpdateFromURL>
     </WebReferenceUrl>
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\DIGITAL.TXT" />
+    <AndroidAsset Include="Assets\DS-DIGI.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGIB.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGII.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGIT.TTF" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />
   <Import Project="..\packages\Xamarin.Android.Arch.Core.Common.1.0.0\build\MonoAndroid80\Xamarin.Android.Arch.Core.Common.targets" Condition="Exists('..\packages\Xamarin.Android.Arch.Core.Common.1.0.0\build\MonoAndroid80\Xamarin.Android.Arch.Core.Common.targets')" />

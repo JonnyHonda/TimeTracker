@@ -14,6 +14,7 @@ using SQLite;
 using TimeTracker.kimai.tsgapis.com;
 using TimeTracker.Resources;
 using static TimeTracker.KimaiDatadase;
+using Android.Graphics;
 
 namespace TimeTracker
 {
@@ -75,7 +76,13 @@ namespace TimeTracker
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                 "localkimaidata.db3");
             db = new SQLiteConnection(dbPath);
+
+           
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+ 
+            Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGI.TTF");
+            TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
+
 
             RunUpdateLoop();
             // Fetch App Prefs
@@ -169,6 +176,7 @@ namespace TimeTracker
 
 
         }
+
 
         /// <summary>
         /// Stops the timer.

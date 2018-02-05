@@ -30,7 +30,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/TimerView"
         android:layout_columnSpan="2"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:textSize="60dp" />
     <Spinner
         android:id="@+id/spinnerCustomers"
         android:layout_width="match_parent"
