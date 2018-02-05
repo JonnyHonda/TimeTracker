@@ -80,6 +80,7 @@ namespace TimeTracker
            
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
  
+            //TODO: Remove ant unsued font files for release build
             Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGI.TTF");
             TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
 
