@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://kimai.tsgapis.com/core/soap.php" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" name="Kimai_Remote_Api" targetNamespace="http://kimai.tsgapis.com/core/soap.php" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://localhost:8080/core/soap.php" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/" name="Kimai_Remote_Api" targetNamespace="http://localhost:8080/core/soap.php" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
-    <xsd:schema targetNamespace="http://kimai.tsgapis.com/core/soap.php" />
+    <xsd:schema targetNamespace="http://localhost:8080/core/soap.php">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+    </xsd:schema>
   </wsdl:types>
   <wsdl:message name="authenticateIn">
     <wsdl:part name="username" type="xsd:string" />
@@ -219,153 +222,153 @@ only tasks for that project are shown.</documentation>
   <wsdl:binding name="Kimai_Remote_ApiBinding" type="tns:Kimai_Remote_ApiPort">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
     <wsdl:operation name="authenticate">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#authenticate" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#authenticate" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="startRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#startRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#startRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="stopRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#stopRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#stopRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getUsers">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getUsers" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getUsers" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getCustomers">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getCustomers" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getCustomers" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getProjects">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getProjects" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getProjects" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getTasks">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getTasks" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getTasks" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getActiveRecording">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getActiveRecording" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getActiveRecording" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getTimesheet">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getTimesheet" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getTimesheet" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getTimesheetRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getTimesheetRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getTimesheetRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="setTimesheetRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#setTimesheetRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#setTimesheetRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="removeTimesheetRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#removeTimesheetRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#removeTimesheetRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getExpenses">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getExpenses" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getExpenses" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getExpenseRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#getExpenseRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#getExpenseRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="setExpenseRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#setExpenseRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#setExpenseRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="removeExpenseRecord">
-      <soap:operation soapAction="http://kimai.tsgapis.com/core/soap.php#removeExpenseRecord" />
+      <soap:operation soapAction="http://localhost:8080/core/soap.php#removeExpenseRecord" />
       <wsdl:input>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:input>
       <wsdl:output>
-        <soap:body use="encoded" namespace="http://kimai.tsgapis.com/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        <soap:body use="encoded" namespace="http://localhost:8080/core/soap.php" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="Kimai_Remote_ApiService">
     <wsdl:port name="Kimai_Remote_ApiPort" binding="tns:Kimai_Remote_ApiBinding">
-      <soap:address location="http://kimai.tsgapis.com/core/soap.php" />
+      <soap:address location="http://localhost:8080/core/soap.php" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

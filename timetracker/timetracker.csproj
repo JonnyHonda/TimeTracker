@@ -16,7 +16,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
-    <ReleaseVersion>0.7</ReleaseVersion>
+    <ReleaseVersion>0.8</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -104,14 +104,17 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web References\kimai.tsgapis.com\Reference.cs">
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
     <Compile Include="Preferences.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="KimaiDatabase.cs" />
     <Compile Include="SqliteActivity.cs" />
     <Compile Include="About.cs" />
+    <Compile Include="Web References\kimai.tsgapis.com\Reference.cs">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\localhost\Reference.cs">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -120,6 +123,11 @@
     <None Include="packages.config" />
     <None Include="Web References\kimai.tsgapis.com\Kimai_Remote_Api.wsdl" />
     <None Include="Web References\kimai.tsgapis.com\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\localhost\Kimai_Remote_Api.wsdl" />
+    <None Include="Web References\localhost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -186,6 +194,18 @@
       <RelPath>Web References\kimai.tsgapis.com</RelPath>
       <UpdateFromURL>https://kimai.tsgapis.com/core/soap.php?wsdl</UpdateFromURL>
     </WebReferenceUrl>
+    <WebReferenceUrl Include="http://localhost:8080/core/soap.php?wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\localhost</RelPath>
+      <UpdateFromURL>http://localhost:8080/core/soap.php?wsdl</UpdateFromURL>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\DIGITAL.TXT" />
+    <AndroidAsset Include="Assets\DS-DIGI.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGIB.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGII.TTF" />
+    <AndroidAsset Include="Assets\DS-DIGIT.TTF" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Annotations.26.1.0.1\build\MonoAndroid80\Xamarin.Android.Support.Annotations.targets')" />

@@ -12,8 +12,10 @@ using Android.Views;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
+//using TimeTracker.localhost;
 using TimeTracker.Resources;
 using static TimeTracker.KimaiDatadase;
+using Android.Graphics;
 
 namespace TimeTracker
 {
@@ -75,7 +77,14 @@ namespace TimeTracker
                  System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
                 "localkimaidata.db3");
             db = new SQLiteConnection(dbPath);
+
+           
             TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+ 
+            //TODO: Remove ant unsued font files for release build
+            Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGI.TTF");
+            TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
+
 
             RunUpdateLoop();
             // Fetch App Prefs
@@ -122,6 +131,12 @@ namespace TimeTracker
                         welcome.Show();
                     }
                 }
+                Button UpdateTimeSheetButton = FindViewById<Button>(Resource.Id.update);
+                UpdateTimeSheetButton.Click += delegate
+                {
+                    UpdateTimeSheet();
+                };
+
 
                 ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                 // Let's get the data for any current active recording and update the start/stop button states
@@ -170,6 +185,28 @@ namespace TimeTracker
 
         }
 
+
+        private void UpdateTimeSheet(bool do_update = true)
+        {
+            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+            Service.AllowAutoRedirect = true;
+
+  
+            object[] items = new object[5];
+
+            items[0] = new object[] { "id", strEntryId };
+            items[1] = new object[] { "projectId", strProjectID };
+            items[2] = new object[] {" taskId", strActivityID };
+            items[3] = new object[] { "comment", "gdog"};
+            items[4] = new object[] { "description", "gdog" };
+
+            object responseObject = Service.setTimesheetRecord(strApiKey, items, do_update);
+            //object responseObject = Service.getTimesheetRecord(strApiKey,Convert.ToInt16(strEntryId));
+            Toast mesg = Toast.MakeText(this, "Updating", ToastLength.Long);
+            mesg.Show();
+
+        }
+
         /// <summary>
         /// Stops the timer.
         /// </summary>
@@ -183,13 +220,13 @@ namespace TimeTracker
                 RunUpdateLoopState = false;
                 Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
 
-                //Get details of the active recording
+                //Stop the current recording based on the entryId we are holding.
                 object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
 
                 // need to get the new active recording, incase it did not stop
                 try
                 {
-                    int x = getActiveRecording(strApiUrl, strApiKey);
+                    do_refresh();
                 }
                 catch (Exception ex)
                 {
@@ -197,6 +234,7 @@ namespace TimeTracker
                 }
             }
             catch (Exception ex)
+
             {
                 Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
             }
@@ -239,7 +277,10 @@ namespace TimeTracker
                 }
                 else
                 {
-                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Short).Show();
+                    // We did not start a new recording we just switvhed to the active one.
+                    //Todo: this has big repercussions, as many devices could start mnay recordings with out stopping any exiting ones
+                    // If this proves to be a problem the best approach may be just to exit and warn the user multiple timers are running.
+                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Long).Show();
                     do_refresh();
                 }
             }
@@ -434,7 +475,7 @@ namespace TimeTracker
 
 
         /// <summary>
-        /// Runs the update loop. This loop runs foreve, and updates the clock ever second provided that the RunUpdateLoopState in true
+        /// Runs the update loop. This loop runs forever, and updates the clock every second provided that the RunUpdateLoopState is true
         /// </summary>
         private async void RunUpdateLoop()
         {
@@ -494,6 +535,7 @@ namespace TimeTracker
             }
             catch (Exception e)
             {
+                
                 throw (e);
             }
         }
@@ -533,7 +575,7 @@ namespace TimeTracker
                     //Fetch the Node and Attribute values.
                     switch (node["key"].InnerText)
                     {
-                        case "timeEntryId":
+                        case "timeEntryID":
                             strEntryId = node["value"].InnerText;
                             break;
 
