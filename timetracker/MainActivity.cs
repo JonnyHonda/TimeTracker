@@ -12,6 +12,7 @@ using Android.Views;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
+//using TimeTracker.localhost;
 using TimeTracker.Resources;
 using static TimeTracker.KimaiDatadase;
 using Android.Graphics;
@@ -130,6 +131,12 @@ namespace TimeTracker
                         welcome.Show();
                     }
                 }
+                Button UpdateTimeSheetButton = FindViewById<Button>(Resource.Id.update);
+                UpdateTimeSheetButton.Click += delegate
+                {
+                    UpdateTimeSheet();
+                };
+
 
                 ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                 // Let's get the data for any current active recording and update the start/stop button states
@@ -179,6 +186,27 @@ namespace TimeTracker
         }
 
 
+        private void UpdateTimeSheet(bool do_update = true)
+        {
+            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+            Service.AllowAutoRedirect = true;
+
+  
+            object[] items = new object[5];
+
+            items[0] = new object[] { "id", strEntryId };
+            items[1] = new object[] { "projectId", strProjectID };
+            items[2] = new object[] {" taskId", strActivityID };
+            items[3] = new object[] { "comment", "gdog"};
+            items[4] = new object[] { "description", "gdog" };
+
+            object responseObject = Service.setTimesheetRecord(strApiKey, items, do_update);
+            //object responseObject = Service.getTimesheetRecord(strApiKey,Convert.ToInt16(strEntryId));
+            Toast mesg = Toast.MakeText(this, "Updating", ToastLength.Long);
+            mesg.Show();
+
+        }
+
         /// <summary>
         /// Stops the timer.
         /// </summary>
@@ -206,6 +234,7 @@ namespace TimeTracker
                 }
             }
             catch (Exception ex)
+
             {
                 Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
             }
@@ -506,6 +535,7 @@ namespace TimeTracker
             }
             catch (Exception e)
             {
+                
                 throw (e);
             }
         }

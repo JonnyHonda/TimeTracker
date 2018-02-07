@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TimeTracker.kimai.tsgapis.com {
+namespace TimeTracker.localhost {
     using System.Diagnostics;
     using System;
     using System.Xml.Serialization;
@@ -21,7 +21,7 @@ namespace TimeTracker.kimai.tsgapis.com {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.3.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Web.Services.WebServiceBindingAttribute(Name="Kimai_Remote_ApiBinding", Namespace="http://kimai.tsgapis.com/core/soap.php")]
+    [System.Web.Services.WebServiceBindingAttribute(Name="Kimai_Remote_ApiBinding", Namespace="http://localhost:8080/core/soap.php")]
     public partial class Kimai_Remote_ApiService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback authenticateOperationCompleted;
@@ -58,7 +58,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         
         /// CodeRemarks
         public Kimai_Remote_ApiService() {
-            this.Url = "http://kimai.tsgapis.com/core/soap.php";
+            this.Url = "http://localhost:8080/core/soap.php";
         }
         
         public Kimai_Remote_ApiService(string url) {
@@ -114,7 +114,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         public event removeExpenseRecordCompletedEventHandler removeExpenseRecordCompleted;
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#authenticate", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#authenticate", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] authenticate(string username, string password) {
             object[] results = this.Invoke("authenticate", new object[] {
@@ -146,7 +146,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#startRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#startRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] startRecord(string apiKey, int projectId, int activityId) {
             object[] results = this.Invoke("startRecord", new object[] {
@@ -180,7 +180,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#stopRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#stopRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public bool stopRecord(string apiKey, int entryId) {
             object[] results = this.Invoke("stopRecord", new object[] {
@@ -212,7 +212,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getUsers", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getUsers", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getUsers(string apiKey) {
             object[] results = this.Invoke("getUsers", new object[] {
@@ -242,7 +242,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getCustomers", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getCustomers", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getCustomers(string apiKey) {
             object[] results = this.Invoke("getCustomers", new object[] {
@@ -272,7 +272,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getProjects", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getProjects", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getProjects(string apiKey, object includeTasks) {
             object[] results = this.Invoke("getProjects", new object[] {
@@ -304,7 +304,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getTasks", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getTasks", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getTasks(string apiKey, int projectId) {
             object[] results = this.Invoke("getTasks", new object[] {
@@ -336,7 +336,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getActiveRecording", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getActiveRecording", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getActiveRecording(string apiKey) {
             object[] results = this.Invoke("getActiveRecording", new object[] {
@@ -366,7 +366,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getTimesheet", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getTimesheet", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getTimesheet(string apiKey, int from, int to, int cleared, int start, int limit) {
             object[] results = this.Invoke("getTimesheet", new object[] {
@@ -406,7 +406,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getTimesheetRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getTimesheetRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getTimesheetRecord(string apiKey, int id) {
             object[] results = this.Invoke("getTimesheetRecord", new object[] {
@@ -438,7 +438,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#setTimesheetRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#setTimesheetRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] setTimesheetRecord(string apiKey, object[] record, bool doUpdate) {
             object[] results = this.Invoke("setTimesheetRecord", new object[] {
@@ -472,7 +472,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#removeTimesheetRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#removeTimesheetRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] removeTimesheetRecord(string apiKey, int id) {
             object[] results = this.Invoke("removeTimesheetRecord", new object[] {
@@ -504,7 +504,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getExpenses", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getExpenses", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getExpenses(string apiKey, int from, int to, int refundable, int cleared, int start, int limit) {
             object[] results = this.Invoke("getExpenses", new object[] {
@@ -546,7 +546,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#getExpenseRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#getExpenseRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] getExpenseRecord(string apiKey, int id) {
             object[] results = this.Invoke("getExpenseRecord", new object[] {
@@ -578,7 +578,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#setExpenseRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#setExpenseRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] setExpenseRecord(string apiKey, object[] record, bool doUpdate) {
             object[] results = this.Invoke("setExpenseRecord", new object[] {
@@ -612,7 +612,7 @@ namespace TimeTracker.kimai.tsgapis.com {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://kimai.tsgapis.com/core/soap.php#removeExpenseRecord", RequestNamespace="http://kimai.tsgapis.com/core/soap.php", ResponseNamespace="http://kimai.tsgapis.com/core/soap.php")]
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("http://localhost:8080/core/soap.php#removeExpenseRecord", RequestNamespace="http://localhost:8080/core/soap.php", ResponseNamespace="http://localhost:8080/core/soap.php")]
         [return: System.Xml.Serialization.SoapElementAttribute("return")]
         public object[] removeExpenseRecord(string apiKey, int id) {
             object[] results = this.Invoke("removeExpenseRecord", new object[] {

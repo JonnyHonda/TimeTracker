@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Threading;
 using System.Xml;
 using Android.App;
 using Android.Content;
@@ -8,6 +7,7 @@ using Android.OS;
 using Android.Widget;
 using SQLite;
 using TimeTracker.kimai.tsgapis.com;
+//using TimeTracker.localhost;
 using static TimeTracker.KimaiDatadase;
 
 namespace TimeTracker
@@ -51,7 +51,7 @@ namespace TimeTracker
             string strApiUserName = ap.getAccessKey("USERNAME");
             string strApiPassword = ap.getAccessKey("PASSWORD");
             string strApiKey = ap.getAccessKey("APIKEY");
-
+            object responseObject;
             save_button.Click += delegate
             {
                 // Save App Prefs
@@ -61,26 +61,19 @@ namespace TimeTracker
                     char[] charsToTrim = { '*', ' ', '\'' };
                     TextView url = FindViewById<TextView>(Resource.Id.edit_url);
                     strApiUrl = url.Text.Trim(charsToTrim);
-                    ap.saveAccessKey("URL", strApiUrl, true);
 
                     TextView username = FindViewById<TextView>(Resource.Id.edit_username);
                     strApiUserName = username.Text.Trim(charsToTrim);
-                    ap.saveAccessKey("USERNAME", strApiUserName, true);
 
                     TextView password = FindViewById<TextView>(Resource.Id.edit_password);
                     strApiPassword = password.Text.Trim(charsToTrim);
-                    ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
-                    // Local Preferences incase the user reset thier user
-                    ap.saveAccessKey("CurrentCustomerInTimer", "0");
-                    ap.saveAccessKey("CurrentProjectInTimer", "0");
-                    ap.saveAccessKey("CurrentActivityInTimer", "0");
                     // Connect to the Soap Service here for Auth
-                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
+                    Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl+ "/core/soap.php");
                     Service.AllowAutoRedirect = true;
 
                     // Get the api key by logging in
-                    object responseObject = Service.authenticate(strApiUserName, strApiPassword);
+                    responseObject = Service.authenticate(strApiUserName, strApiPassword);
 
                     // Create an XML Node and cast the response object to it.
                     XmlNode[] responseXml;
@@ -90,15 +83,20 @@ namespace TimeTracker
                     XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
                     if ((apiNode != null))
                     {
+                        // If we are in here login was sucessul so save all the keys and cache the data tables
+                        ap.saveAccessKey("URL", strApiUrl, true);
+                        ap.saveAccessKey("USERNAME", strApiUserName, true);
+                        ap.saveAccessKey("PASSWORD", strApiPassword, true);
+
                         strApiKey = apiNode.InnerXml;
                         ap.saveAccessKey("APIKEY", strApiKey, true);
                         db.CreateTable<Customer>();
                         db.DeleteAll<Customer>();
-                        //ThreadPool.QueueUserWorkItem((state) => populateCustomerTable(strApiUrl, strApiKey, db));
+
                         populateCustomerTable(strApiUrl, strApiKey, db);
                         db.CreateTable<Project>();
                         db.DeleteAll<Project>();
-                        //ThreadPool.QueueUserWorkItem(state => populateProjectTable(strApiUrl, strApiKey, db));
+
                         populateProjectTable(strApiUrl, strApiKey, db);
                     }
                     else
