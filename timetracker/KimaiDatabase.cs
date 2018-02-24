@@ -1,7 +1,7 @@
 ﻿using System;
 using SQLite;
 
-namespace TimeTracker
+namespace Kimai
 {
     /// <summary>
     /// Kimai datadase.
@@ -25,6 +25,7 @@ namespace TimeTracker
 
             public int CustomerID { get; set; } // the Customer ID as stored in Kimai 
             public string Name { get; set; }
+
 
             public override string ToString()
             {

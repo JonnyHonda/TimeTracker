@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml;
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Support.V7.App;
-using Toolbar = Android.Support.V7.Widget.Toolbar;
-
-using Android.Views;
+﻿using Android.App;
 using Android.Widget;
+using Android.OS;
+using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
+using Android.Content;
+using Android.Views;
 using SQLite;
-using TimeTracker.kimai.tsgapis.com;
-//using TimeTracker.localhost;
-using TimeTracker.Resources;
-using static TimeTracker.KimaiDatadase;
-using Android.Graphics;
+using static Kimai.KimaiDatadase;
+using JsonKimaiMaps;
+using Newtonsoft.Json;
 
-namespace TimeTracker
+namespace Kimai
 {
-    [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
-    public class MainActivity : AppCompatActivity
+    [Activity(Label = "Kimai", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
+    public class MainActivity : Activity
     {
         public bool debug = false;
         public string strEntryId;
@@ -33,11 +27,10 @@ namespace TimeTracker
         public int CurrentProjectInTimer;
         public int CurrentActivityInTimer;
 
-        public TextView TimerViewer;
+        //   public TextView TimerViewer;
         public TextView Tv2;
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
-
         /// <summary>
         /// The customer lookup list.
         /// The Look up list hold an two integers <index><customerId>
@@ -54,240 +47,128 @@ namespace TimeTracker
         /// </summary>
         public Dictionary<int, int> ActivitiesLookupList = new Dictionary<int, int>();
         public SQLiteConnection db;
-        public string strApiUrl;
-        public string strApiUserName;
-        public string strApiPassword;
-        public string strApiKey;
+        int count = 1;
 
+        public string ActionMessage;
+        public string KimaiMessage;
         AppPreferences ap;
-        //string apiKey;
+        string strApiKey;
+        KimaiServer MyKimai = new KimaiServer();
+
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
-            Toolbar toolbar = FindViewById<Toolbar>(Resource.Id.toolbar);
-
-
-            SetSupportActionBar(toolbar);
-            SupportActionBar.Title = GetString(Resource.String.app_name);
-
             string dbPath = System.IO.Path.Combine(
-                 System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
-                "localkimaidata.db3");
+System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal),
+"localkimaidata.db3");
+
             db = new SQLiteConnection(dbPath);
-
-           
-            TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
- 
-            //TODO: Remove ant unsued font files for release build
-            Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGI.TTF");
-            TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
-
-
-            RunUpdateLoop();
             // Fetch App Prefs
-            Context mContext = Android.App.Application.Context;
+            Context mContext = Application.Context;
             ap = new AppPreferences(mContext);
-            strApiUrl = ap.getAccessKey("URL");
-            strApiUserName = ap.getAccessKey("USERNAME");
-            strApiPassword = ap.getAccessKey("PASSWORD");
-            strApiKey = ap.getAccessKey("APIKEY");
-
-
-            // Looks like we don't have any setting stored so we need to go to the Setting Page
-            if (string.IsNullOrEmpty(strApiUrl) || debug)
+            SetContentView(Resource.Layout.Main);
+            if (string.IsNullOrEmpty(ap.getAccessKey("URL")))
             {
                 StartActivity(typeof(Settings));
             }
             else
             {
+                MyKimai.url = ap.getAccessKey("URL") + "/core/json.php";
 
-                // Do we have a apikey to make a call, if not login fetch a key and store it in the local prefs
-                if (string.IsNullOrEmpty(strApiKey) && !string.IsNullOrEmpty(strApiUrl))
-                {
-                    // No apiKey stored so we'll need to log in
-                    try
-                    {
-                        // Connect to the Soap Service here for Auth
-                        Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                        Service.AllowAutoRedirect = true;
-                        // Get the api key by logging in
-                        object responseObject = Service.authenticate(strApiUserName, strApiPassword);
+            }
 
-                        // Create an XML Node and cast the response object to it.
-                        XmlNode[] responseXml;
-                        responseXml = (System.Xml.XmlNode[])responseObject;
+            RunUpdateLoop();
 
-                        // fetech the abcolute position of the api key
-                        XmlNode apiNode = responseXml[2].SelectSingleNode("value/item/item/value");
-                        strApiKey = apiNode.InnerXml;
-                        ap.saveAccessKey("APIKEY", strApiKey, true);
-                    }
-                    catch (Exception e)
-                    {
-                        Toast welcome = Toast.MakeText(this, e.Message, ToastLength.Long);
-                        welcome.Show();
-                    }
-                }
-                Button UpdateTimeSheetButton = FindViewById<Button>(Resource.Id.update);
-                UpdateTimeSheetButton.Click += delegate
-                {
-                    UpdateTimeSheet();
-                };
+            Button update_button = FindViewById<Button>(Resource.Id.update);
+            update_button.Click += delegate
+            {
+                GetActiveRecord();
+            };
+       //     ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
 
+            strApiKey = ap.getAccessKey("APIKEY");
+            // Do we haave an api key?
+            if (string.IsNullOrEmpty(strApiKey))
+            {
+                // No, Let's log in
+                LoginToKimai();
+            }
+            else
+            {
+                //GetActiveRecord();
 
+                //
                 ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                 // Let's get the data for any current active recording and update the start/stop button states
-                try
-                {
-                    int countOfRecordings = getActiveRecording(strApiUrl, strApiKey);
-                    if (countOfRecordings == 0)
-                    {
-                        togglebutton.Checked = false;
-                        RunUpdateLoopState = false;
-
-                        Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                    }
-                    else
-                    {
-                        togglebutton.Checked = true;
+              
+                if(do_refresh()){
+                    togglebutton.Checked = true;
                         RunUpdateLoopState = true;
 
                         Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-                    }
-                }
-                catch (Exception e)
-                {
-                    Toast mesg = Toast.MakeText(this, e.Message, ToastLength.Long);
-                    mesg.Show();
+                }else{
+                    togglebutton.Checked = false;
+                    RunUpdateLoopState = false;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
                 }
 
-                do_refresh();
-
-                /**
-                 * 
-                 * OnClick events for toggle button
-                **/
                 togglebutton.Click += (o, e) =>
                 {
+
                     // Perform action on clicks
                     if (togglebutton.Checked)
-                        StartTimer();
+                    {
+                        if (!GetActiveRecord())
+                        {
+                            List<string> Parameters = new List<string>
+                        {
+                            strApiKey
+                        };
+                            System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("startRecord", Parameters));
+                            taskA.Wait();
+                            RunUpdateLoopState = true;
+                            DurationCount = 0;
+                        }else{
+                            // We did not start a new recording we just switvhed to the active one.
+                            //Todo: this has big repercussions, as many devices could start mnay recordings with out stopping any exiting ones
+                            // If this proves to be a problem the best approach may be just to exit and warn the user multiple timers are running.
+                            Toast.MakeText(this, "There appears to be an active recording", ToastLength.Long).Show();
+                            do_refresh();
+                        }
+                    }
                     else
                     {
-                        StopTimer();
+                            List<string> Parameters = new List<string>
+                        {
+                            strApiKey
+                        };
+                           System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("stopRecord", Parameters));
+                            taskA.Wait();
+                            RunUpdateLoopState = false;
+                            DurationCount = 0;
+ 
+                           do_refresh();
                     }
                 };
             }
-
-
         }
 
-
-        private void UpdateTimeSheet(bool do_update = true)
-        {
-            Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-            Service.AllowAutoRedirect = true;
-
-  
-            object[] items = new object[5];
-
-            items[0] = new object[] { "id", strEntryId };
-            items[1] = new object[] { "projectId", strProjectID };
-            items[2] = new object[] {" taskId", strActivityID };
-            items[3] = new object[] { "comment", "gdog"};
-            items[4] = new object[] { "description", "gdog" };
-
-            object responseObject = Service.setTimesheetRecord(strApiKey, items, do_update);
-            //object responseObject = Service.getTimesheetRecord(strApiKey,Convert.ToInt16(strEntryId));
-            Toast mesg = Toast.MakeText(this, "Updating", ToastLength.Long);
-            mesg.Show();
-
+        private bool do_refresh()
+        {         
+            PopulateCustomersSpinner();
+            return GetActiveRecord();
         }
 
         /// <summary>
-        /// Stops the timer.
+        /// Ons the create options menu.
         /// </summary>
-        private void StopTimer()
+        /// <returns><c>true</c>, if create options menu was oned, <c>false</c> otherwise.</returns>
+        /// <param name="menu">Menu.</param>
+        public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-                // Toggle button status
-                RunUpdateLoopState = false;
-                Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                //Stop the current recording based on the entryId we are holding.
-                object responseObject = Service.stopRecord(strApiKey, Convert.ToInt16(strEntryId));
-
-                // need to get the new active recording, incase it did not stop
-                try
-                {
-                    do_refresh();
-                }
-                catch (Exception ex)
-                {
-                    Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
-                }
-            }
-            catch (Exception ex)
-
-            {
-                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
-            }
-            Toast.MakeText(this, "Timer Stopped", ToastLength.Short).Show();
-        }
-
-        /// <summary>
-        /// Starts the timer.
-        /// </summary>
-        private void StartTimer()
-        {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(strApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-                //Get details of the active recording
-                // need to check if we are out of sync and tere is already an active recording
-                int count = getActiveRecording(strApiUrl, strApiKey);
-                if (count == 0)
-                {
-                    object responseObject;
-                    responseObject = Service.startRecord(strApiKey, ProjectLookupList[CurrentProjectInTimer], ActivitiesLookupList[CurrentActivityInTimer]);
-
-                    // toggle button states
-                    RunUpdateLoopState = true;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = RunUpdateLoopState.ToString();
-
-                    // need to get the new active recording
-                    try
-                    {
-                        int x = getActiveRecording(strApiUrl, strApiKey);
-                    }
-                    catch (Exception ex)
-                    {
-                        Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
-
-                    }
-                    Toast.MakeText(this, "Timer Started", ToastLength.Short).Show();
-                    do_refresh();
-                }
-                else
-                {
-                    // We did not start a new recording we just switvhed to the active one.
-                    //Todo: this has big repercussions, as many devices could start mnay recordings with out stopping any exiting ones
-                    // If this proves to be a problem the best approach may be just to exit and warn the user multiple timers are running.
-                    Toast.MakeText(this, "There appears to be an active recording", ToastLength.Long).Show();
-                    do_refresh();
-                }
-            }
-            catch (Exception ex)
-            {
-                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
-            }
+            MenuInflater.Inflate(Resource.Menu.option_menu, menu);
+            return true;
         }
 
         /// <summary>
@@ -300,7 +181,9 @@ namespace TimeTracker
             switch (item.ItemId)
             {
                 case Resource.Id.menu_refresh:
+                    //GetActiveRecord();
                     do_refresh();
+                    PopulateCustomersSpinner();
                     break;
                 case Resource.Id.menu_about:
                     StartActivity(typeof(About));
@@ -312,23 +195,123 @@ namespace TimeTracker
             return base.OnOptionsItemSelected(item);
         }
 
-        private void do_refresh()
+        /// <summary>
+        /// Logins to kimai.
+        /// </summary>
+        private void LoginToKimai()
         {
-            getActiveRecording(strApiUrl, strApiKey);
-            PopulateCustomersSpinner();
+            List<string> Parameters = new List<string>
+            {
+                "john.burrin",
+                "dragon32"
+            };
+          //  MyKimai.ConnectAsync("authenticate", Parameters);
+            System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("authenticate", Parameters));
+            taskA.Wait();
+            ActionMessage = "Login Complete";
+            KimaiMessage = "LoginToKimai";
+
         }
 
         /// <summary>
-        /// Ons the create options menu.
+        /// Gets the active record.
         /// </summary>
-        /// <returns><c>true</c>, if create options menu was oned, <c>false</c> otherwise.</returns>
-        /// <param name="menu">Menu.</param>
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        private bool GetActiveRecord()
         {
-            MenuInflater.Inflate(Resource.Menu.top_menus, menu);
-            return base.OnCreateOptionsMenu(menu);
+            TextView projectText = FindViewById<TextView>(Resource.Id.textView1);
+            TextView TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+            ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
+            bool activeEvent = false;
+            List<string> Parameters = new List<string>
+            {
+                strApiKey
+            };
+            try
+            {
+               // MyKimai.ConnectAsync("getActiveRecording", Parameters);
+                System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("getActiveRecording", Parameters));
+                taskA.Wait();
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+            }
+            ActiveRecordingMap ActiveRecordingObject = new ActiveRecordingMap();
+            try
+            {
+            ActiveRecordingObject = JsonConvert.DeserializeObject<ActiveRecordingMap>(MyKimai.JsonResultString);
+                bool Success = ActiveRecordingObject.Result.Success;
+                if (Success)
+                {
+                    projectText.Text = "Customer: ";
+                    projectText.Append(ActiveRecordingObject.Result.Items[0].customerName);
+                    projectText.Append(System.Environment.NewLine);
+                    projectText.Append("Project: ");
+                    projectText.Append(ActiveRecordingObject.Result.Items[0].projectName);
+                    projectText.Append(System.Environment.NewLine);
+                    projectText.Append("Activity:");
+                    projectText.Append(ActiveRecordingObject.Result.Items[0].activityName);
+                    UInt32 StartTimeInUnixTime = ActiveRecordingObject.Result.Items[0].start;
+                    UInt32 TimeNowInUnixTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    RunUpdateLoopState = true;
+                    togglebutton.Checked = true;
+                    try
+                    {
+                        DurationCount = TimeNowInUnixTime - StartTimeInUnixTime;
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast mesg = Toast.MakeText(this, ex.Message, ToastLength.Long);
+                        mesg.Show();
+                        DurationCount = 0;
+                    }
+                    activeEvent = true;
+                }
+                else
+                {
+                    RunUpdateLoopState = false;
+                    togglebutton.Checked = false;
+                    projectText.Text = "No Active Recording.";
+                    TimerViewer.Text = "00:00:00";
+                    activeEvent = false;
+                }
+                return activeEvent;
+              }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, ex.Message, ToastLength.Long).Show();
+           }
+            return activeEvent;
         }
 
+        /// <summary>
+        /// Runs the update loop. This loop runs forever, and updates the clock every second provided that the RunUpdateLoopState is true
+        /// </summary>
+        private async void RunUpdateLoop()
+        {
+            while (true)
+            {
+                await System.Threading.Tasks.Task.Delay(1000);
+                TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
+                TextView TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+                if (RunUpdateLoopState)
+                {
+                    int hours = time.Hours;
+                    if (time.Days > 0)
+                    {
+                        hours = (time.Days * 24) + hours;
+                    }
+
+                    string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
+                    TimerViewer.Text = str;
+                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
+                }
+                else
+                {
+                    TimerViewer.Text = "00:00:00";
+                }
+            }
+        }
         /// <summary>
         /// Customers the spinner item selected.
         /// </summary>
@@ -355,7 +338,7 @@ namespace TimeTracker
             {
                 // Clear the customer lookup table
                 CustomerLookupList.Clear();
-                var customers = db.Query<Customer>("SELECT * FROM Customer");
+                var customers = db.Query<KimaiDatadase.Customer>("SELECT * FROM Customer");
                 int count = customers.Count;
                 if (count > 0)
                 {
@@ -396,7 +379,7 @@ namespace TimeTracker
             try
             {
                 ProjectLookupList.Clear();
-                var projects = db.Query<Project>("SELECT * FROM Project WHERE CustomerID = ?", customerID);
+                var projects = db.Query<KimaiDatadase.Project>("SELECT * FROM Project WHERE CustomerID = ?", customerID);
                 int index = 0;
                 int count = projects.Count;
                 if (count > 0)
@@ -472,74 +455,6 @@ namespace TimeTracker
             ap.saveAccessKey("CurrentActivityInTimer", CurrentActivityInTimer.ToString());
         }
 
-
-
-        /// <summary>
-        /// Runs the update loop. This loop runs forever, and updates the clock every second provided that the RunUpdateLoopState is true
-        /// </summary>
-        private async void RunUpdateLoop()
-        {
-            while (true)
-            {
-                await Task.Delay(1000);
-                TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
-
-                if (RunUpdateLoopState)
-                {
-                    int hours = time.Hours;
-                    if (time.Days > 0)
-                    {
-                        hours = (time.Days * 24) + hours;
-                    }
-
-                    string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
-                    TimerViewer.Text = str;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
-                }
-                else
-                {
-                    TimerViewer.Text = "00:00:00";
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Gets the active recording.
-        /// </summary>
-        /// <returns>The active recording.</returns>
-        /// <param name="lstrApiUrl">Lstr API URL.</param>
-        /// <param name="lstrApiKey">Lstr API key.</param>
-        int getActiveRecording(string lstrApiUrl, string lstrApiKey)
-        {
-            try
-            {
-                Kimai_Remote_ApiService Service = new Kimai_Remote_ApiService(lstrApiUrl + "/core/soap.php");
-                Service.AllowAutoRedirect = true;
-
-                //Get details of the active recording
-                object responseObject = Service.getActiveRecording(lstrApiKey);
-
-                XmlNode[] responseXml = (System.Xml.XmlNode[])responseObject;
-
-                XmlNodeList recordingNodeXml;
-
-                recordingNodeXml = responseXml[2].SelectNodes("value/item/item");
-                //Loop through the selected Nodes.
-                TextView projectText = FindViewById<TextView>(Resource.Id.textView1);
-
-                // Populate the projectText TextView
-                currentProject(recordingNodeXml, projectText);
-                return recordingNodeXml.Count;
-
-            }
-            catch (Exception e)
-            {
-                
-                throw (e);
-            }
-        }
-
         public static string KeyByValue(Dictionary<int, int> dict, int val)
         {
             int key = 0;
@@ -553,94 +468,8 @@ namespace TimeTracker
             }
             return key.ToString();
         }
-        /// <summary>
-        /// Currents the project.
-        /// </summary>
-        /// <param name="recordingNodeXml">Recording node xml.</param>
-        /// <param name="projectText">Project text.</param>
-        void currentProject(XmlNodeList recordingNodeXml, TextView projectText)
-        {
-            ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
-            Spinner CustomerSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
 
-            if (recordingNodeXml.Count > 0)
-            {
-                //TimerViewer.Text = "00:00:00";
-                projectText.Text = "";
-                RunUpdateLoopState = true;
-                togglebutton.Checked = true;
-
-                foreach (XmlNode node in recordingNodeXml)
-                {
-                    //Fetch the Node and Attribute values.
-                    switch (node["key"].InnerText)
-                    {
-                        case "timeEntryID":
-                            strEntryId = node["value"].InnerText;
-                            break;
-
-                        case "customerID":
-                            strCustomerID = node["value"].InnerText;
-                            CustomerSpinner.SetSelection(Convert.ToUInt16(node["value"].InnerText));
-                            break;
-
-                        case "projectID":
-                            strProjectID = node["value"].InnerText;
-                            break;
-
-                        case "activityID":
-                            strActivityID = node["value"].InnerText;
-                            break;
-
-                        case "start":
-                            //     projectText.Append((node["value"].InnerText));
-                            UInt32 StartTimeInUnixTime = Convert.ToUInt32(node["value"].InnerText);
-                            UInt32 TimeNowInUnixTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                            try
-                            {
-                                DurationCount = TimeNowInUnixTime - StartTimeInUnixTime;
-                            }
-                            catch (Exception ex)
-                            {
-                                Toast mesg = Toast.MakeText(this, ex.Message, ToastLength.Long);
-                                mesg.Show();
-                                DurationCount = 0;
-                            }
-                            break;
-                        case "end":
-                            break;
-                        case "duration":
-                            break;
-                        case "servertime":
-                            break;
-
-                        case "customerName":
-                            projectText.Append("Customer: ");
-                            projectText.Append((node["value"].InnerText));
-                            projectText.Append(System.Environment.NewLine);
-
-                            break;
-                        case "projectName":
-                            projectText.Append("Project: ");
-                            projectText.Append((node["value"].InnerText));
-                            projectText.Append(System.Environment.NewLine);
-                            break;
-                        case "activityName":
-                            projectText.Append("Activity:");
-                            projectText.Append((node["value"].InnerText));
-                            break;
-                    }
-                }
-            }
-            else
-            {
-                RunUpdateLoopState = false;
-                togglebutton.Checked = false;
-                projectText.Text = "No Active Recording.";
-                TimerViewer.Text = "00:00:00";
-
-            }
-        }
     }
+
 }
 

@@ -1,11 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 	<!--///showAsAction="always" ///-->
-	<item android:id="@+id/action_settings" android:title="Share" showAsAction="always" />
-	<item android:id="@+id/action_settings1" android:title="Bluetooth" showAsAction="always" />
-	<item android:id="@+id/action_settings2" android:title="Exit" showAsAction="always" />
+	<item android:id="@+id/menu_settings" android:title="Settings" showAsAction="always" />
+    <item android:id="@+id/menu_about" android:title="About" showAsAction="always" />
+	<item android:id="@+id/menu_exit" android:title="Exit" showAsAction="always" />
 	<!--/android:showAsAction="ifRoom"/-->
-	<item android:id="@+id/action_settings3" android:title="Share" android:showAsAction="ifRoom" />
-	<item android:id="@+id/action_settings4" android:title="Bluetooth" android:showAsAction="ifRoom" />
+	<item android:id="@+id/menu_refresh" android:title="Refresh" android:showAsAction="ifRoom" />
 </menu>
