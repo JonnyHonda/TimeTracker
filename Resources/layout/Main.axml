@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="16"
+    android:columnCount="3"
+    android:textAppearance="?android:attr/textAppearanceSmall"
+    android:padding="10dp">
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/apiUserNme"
+        android:layout_columnSpan="3"
+        android:layout_gravity="center_horizontal"
+        android:text="Current Active Recording Data" />
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1"
+        android:maxLines="4"
+        android:gravity="top"
+        android:minLines="4"
+        android:layout_columnSpan="3" />
+    <TextView
+        android:text="00:00:00"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/TimerView"
+        android:layout_columnSpan="3"
+        android:layout_gravity="center_horizontal"
+        android:textSize="60dp" />
+    <Spinner
+        android:id="@+id/spinnerCustomers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="3"
+        android:spinnerMode="dialog" />
+    <Spinner
+        android:id="@+id/spinnerProjects"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="3"
+        android:spinnerMode="dialog" />
+    <Spinner
+        android:id="@+id/spinnerActivities"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="3"
+        android:spinnerMode="dialog" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_columnSpan="3"
+        android:id="@+id/linearLayout1">
+        <EditText
+            android:inputType="textMultiLine"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/editComments"
+            android:hint="Comments (not implemented)"
+            android:maxLines="4"
+            android:gravity="top"
+            android:minLines="4"
+            android:layout_weight="100" />
+        <Button
+            android:text="Update"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/update"
+            android:layout_gravity="right" />
+    </LinearLayout>
+    <TextView
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textView2"
+        android:layout_columnSpan="3" />
+    <ToggleButton
+        android:id="@+id/toggleButton1"
+        android:layout_columnSpan="3"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:textOff="Start Timer"
+        android:textOn="Stop Timer"
+        android:ems="6"
+        android:lines="2" />
+</GridLayout>
