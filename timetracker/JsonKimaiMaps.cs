@@ -58,43 +58,6 @@ namespace JsonKimaiMaps
         public string activityName { get; set; }
     }
 
-
-    /*
-    /// <summary>
-    /// Get projects
-    /// </summary>
-    public class ProjectMap
-    {
-        public string id { get; set; }
-        public string jsonrpc { get; set; }
-        public ProjectResult Result;
-    }
-
-    public class ProjectResult
-    {
-        public bool Success { get; set; }
-        public string Total { get; set; }
-        public Project[] Items;
-    }
-
-    public class Project
-    {
-        public int customerID { get; set; }
-        public int projectID { get; set; }
-        public string approved { get; set; }
-        public string budget { get; set; }
-        public string comment { get; set; }
-        public string customerVisible { get; set; }
-        public string effort { get; set; }
-        public string filter { get; set; }
-        public string @internal { get; set; }
-        public string name { get; set; }
-        public string trash { get; set; }
-        public string visible { get; set; }
-    }
-
-    */
-
     /// <summary>
     /// Customer map
     /// </summary>
@@ -121,34 +84,6 @@ namespace JsonKimaiMaps
         public string visible { get; set; }
     }
 
-    /*
-    /// <summary>
-    /// Task map.
-    /// </summary>
-    public class TaskMap
-    {
-        public string id { get; set; }
-        public string jsonrpc { get; set; }
-        public TaskResult Result;
-    }
-
-    public class TaskResult
-    {
-        public bool Success { get; set; }
-        public string Total { get; set; }
-        public Task[] Items;
-    }
-
-    public class Task
-    {
-        public string activityId { get; set; }
-        public string approved { get; set; }
-        public string budget { get; set; }
-        public string effort { get; set; }
-        public string name { get; set; }
-        public string visible { get; set; }
-    }
-    */
     public class RecordingMap
     {
         public string id { get; set; }

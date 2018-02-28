@@ -299,22 +299,13 @@ namespace TimeTracker
                         DurationCount = 0;
                     }
                     activeEvent = true;
-                  //  Spinner CustomerSpinner = FindViewById<Spinner>(Resource.Id.spinnerCustomers);
-                  //  Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-                  //  Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-
-                   
+                                       
                     // We have a lookup value so we need an index to use
                     CurrentCustomerInTimer = ActiveRecordingObject.Result.Items[0].customerID;
                     CurrentProjectInTimer = ActiveRecordingObject.Result.Items[0].projectID;
                     CurrentActivityInTimer = ActiveRecordingObject.Result.Items[0].activityID;
                     PopulateCustomersSpinner();
-                  
-                 //   PopulateProjectsSpinner(0);
-                  //  PopulateActivitiesSpinner(0);
-                   //CustomerSpinner.SetSelection(CurrentCustomerInTimer);
-                  //  ProjectSpinner.SetSelection(CurrentProjectInTimer);
-                  //  ActivitySpinner.SetSelection(CurrentActivityInTimer);
+
                 }
                 else
                 {
