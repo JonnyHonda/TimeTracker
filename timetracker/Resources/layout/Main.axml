@@ -5,39 +5,22 @@
     android:layout_height="match_parent"
     android:rowCount="16"
     android:columnCount="3"
-    android:textAppearance="?android:attr/textAppearanceSmall">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/apiUserNme"
-        android:layout_columnSpan="3"
-        android:layout_gravity="center_horizontal"
-        android:text="Current Active Recording Data" />
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView1"
-        android:layout_columnSpan="3" />
+    android:textAppearance="?android:attr/textAppearanceSmall"
+    style="@style/ThemeBase">
     <TextView
         android:text="00:00:00"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/TimerView"
         android:layout_columnSpan="3"
         android:layout_gravity="center_horizontal"
-        android:textSize="60dp" />
+        style="@style/TimerStyle" />
     <Spinner
         android:id="@+id/spinnerCustomers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_columnSpan="3"
-        android:spinnerMode="dialog" />
+        android:spinnerMode="dialog"
+        android:dropDownSelector="@drawable/abc_ic_ab_back_material" />
     <Spinner
         android:id="@+id/spinnerProjects"
         android:layout_width="match_parent"
@@ -67,7 +50,9 @@
             android:maxLines="4"
             android:gravity="top"
             android:minLines="4"
-            android:layout_weight="100" />
+            android:layout_weight="100"
+            android:textColor="#ffd50000"
+            style="@style/TextStyle" />
         <Button
             android:text="Update"
             android:layout_width="wrap_content"
@@ -79,7 +64,8 @@
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/textView2"
-        android:layout_columnSpan="3" />
+        android:layout_columnSpan="3"
+        style="@style/TextStyle" />
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_columnSpan="3"
@@ -89,4 +75,13 @@
         android:textOn="Stop Timer"
         android:ems="6"
         android:lines="2" />
+    <TextView
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1"
+        android:maxLines="4"
+        android:gravity="top"
+        android:minLines="4"
+        android:layout_columnSpan="3" />
 </GridLayout>

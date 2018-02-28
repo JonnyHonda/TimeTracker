@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:rowCount="5"
-    android:columnCount="3"
-    android:padding="5dp"
-    android:textAppearance="?android:attr/textAppearanceSmall">
-<!-- Row 1 -->
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:showDividers="none"
+    android:padding="25px">
     <TextView
         android:id="@+id/lbl_title"
         android:text="Kimai Settings"
-        android:layout_columnSpan="3"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center_horizontal" />
-<!-- Row 2 -->
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="10px" />
+<!-- Server Url-->
     <TextView
         android:id="@+id/lbl_url"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Url" />
-    <Space
-        android:layout_width="1dp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kimai Server Url" />
     <EditText
         android:id="@+id/edit_url"
         android:scrollHorizontally="true"
@@ -27,46 +29,74 @@
         android:layout_gravity="fill_horizontal"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="https://kimai.tsgapis.com"
         android:autoText="false" />
-<!-- Row 3 -->
+<!-- User Name -->
     <TextView
         android:id="@+id/lbl_username"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="User name" />
-    <Space
-        android:layout_width="1dp" />
     <EditText
         android:id="@+id/edit_username"
         android:layout_gravity="fill_horizontal"
         android:singleLine="true"
         android:maxLines="1"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="user.name" />
-<!-- Row 4 -->
+<!-- Password -->
     <TextView
         android:id="@+id/lbl_password"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Password" />
-    <Space
-        android:layout_width="1dp" />
     <EditText
         android:id="@+id/edit_password"
         android:inputType="textPassword"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
         android:hint="***********" />
-<!-- Row 5 -->
-    <Button
-        android:id="@+id/btn_settings"
-        android:text="Save"
-        android:layout_columnSpan="1" />
-    <Button
-        android:id="@+id/btn_cancel"
-        android:text="Cancel"
-        android:layout_columnSpan="2" />
-    <Button
-        android:id="@+id/btn_view_data"
-        android:text="View Sqlite Data"
-        android:layout_columnSpan="3" />
-</GridLayout>
+<!-- Status Message -->
+    <TextView
+        android:text=""
+        android:layout_gravity="fill_horizontal"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/status_message" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout1"
+        android:gravity="center_horizontal">
+    <!-- Save button -->
+        <Button
+            android:id="@+id/btn_save"
+            android:text="Save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    <!-- Cancel button -->
+        <Button
+            android:id="@+id/btn_cancel"
+            android:text="Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    <!-- view SQLite data button -->
+        <Button
+            android:id="@+id/btn_view_data"
+            android:text="View Sqlite Data"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</LinearLayout>

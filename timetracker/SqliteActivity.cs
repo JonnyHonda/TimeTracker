@@ -2,9 +2,9 @@
 using Android.OS;
 using Android.Widget;
 using SQLite;
-using static Kimai.KimaiDatadase;
+using static TimeTracker.KimaiDatadase;
 
-namespace Kimai
+namespace TimeTracker
 {
     [Activity(Label = "Kimai Sqlite Data", MainLauncher = false)]
     public class SqliteActivity : Activity

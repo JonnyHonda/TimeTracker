@@ -1,7 +1,7 @@
 ﻿using System;
 using SQLite;
 
-namespace Kimai
+namespace TimeTracker
 {
     /// <summary>
     /// Kimai datadase.

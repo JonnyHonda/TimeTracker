@@ -13,9 +13,9 @@ using JsonKimaiMaps;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
-using static Kimai.KimaiDatadase;
+using static TimeTracker.KimaiDatadase;
 
-namespace Kimai
+namespace TimeTracker
 {
     [Activity(Label = "Settings")]
     public class Settings : Activity
@@ -78,10 +78,9 @@ namespace Kimai
                 AuthenticateMap AuthObject = new AuthenticateMap();
                 AuthObject = JsonConvert.DeserializeObject<AuthenticateMap>(MyKimai.JsonResultString);
                 bool Success = AuthObject.Result.Success;
-
-                string apikey = AuthObject.Result.Items[0].apiKey;
                 if (Success)
                 {
+                    string apikey = AuthObject.Result.Items[0].apiKey;
                     ap.saveAccessKey("APIKEY", AuthObject.Result.Items[0].apiKey, true);
                     Parameters.Clear();
                     Parameters.Add(apikey);
@@ -132,11 +131,12 @@ namespace Kimai
                             }
                             db.Insert(newProject);
                         }
+                        StartActivity(typeof(MainActivity));
                     }
+                }else{
+                    Toast mesg = Toast.MakeText(this, "Login Failed", ToastLength.Short);
+                    mesg.Show();
                 }
-
-                StartActivity(typeof(MainActivity));
-
             };
 
             Button cancel_button = FindViewById<Button>(Resource.Id.btn_cancel);
