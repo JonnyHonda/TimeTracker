@@ -26,6 +26,7 @@ namespace TimeTracker
             public int CustomerID { get; set; } // the Customer ID as stored in Kimai 
             public string Name { get; set; }
 
+
             public override string ToString()
             {
                 return string.Format("[Customer: ID={0}, CustomerID={1}, Name={2}]", ID, CustomerID, Name);

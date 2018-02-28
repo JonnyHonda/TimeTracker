@@ -16,7 +16,7 @@
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
-    <ReleaseVersion>0.8</ReleaseVersion>
+    <ReleaseVersion>0.9</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,28 +99,33 @@
     <Reference Include="Xamarin.Android.Support.v7.AppCompat">
       <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.26.1.0.1\lib\MonoAndroid80\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Preferences.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="KimaiDatabase.cs" />
-    <Compile Include="SqliteActivity.cs" />
-    <Compile Include="About.cs" />
     <Compile Include="Web References\kimai.tsgapis.com\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="Web References\localhost\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="About.cs" />
+    <Compile Include="JsonKimaiMaps.cs" />
+    <Compile Include="KimaiDatabase.cs" />
+    <Compile Include="KimaiExceptions.cs" />
+    <Compile Include="KimaiServer.cs" />
+    <Compile Include="MainActivity.cs" />
+    <Compile Include="Preferences.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SqliteActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
-    <None Include="packages.config" />
     <None Include="Web References\kimai.tsgapis.com\Kimai_Remote_Api.wsdl" />
     <None Include="Web References\kimai.tsgapis.com\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -131,6 +136,7 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
@@ -143,7 +149,6 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher.png" />
     <AndroidResource Include="Resources\layout\About.axml" />
-    <AndroidResource Include="Resources\menu\top_menus.xml" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_action_autorenew.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_action_settings.png" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_action_create.png" />
@@ -175,6 +180,8 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_action_content_copy.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_action_content_cut.png" />
     <AndroidResource Include="Resources\values\styles.xml" />
+    <AndroidResource Include="Resources\menu\main_menu.xml" />
+    <AndroidResource Include="Resources\layout\spinner_item.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

@@ -1813,8 +1813,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0026
 			public const int META = 2131427366;
 			
-			// aapt resource value: 0x7f0b0092
-			public const int SCROLLER_ID = 2131427474;
+			// aapt resource value: 0x7f0b0091
+			public const int SCROLLER_ID = 2131427473;
 			
 			// aapt resource value: 0x7f0b0027
 			public const int SHIFT = 2131427367;
@@ -1822,14 +1822,14 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0028
 			public const int SYM = 2131427368;
 			
-			// aapt resource value: 0x7f0b0093
-			public const int TEXT_STATUS_ID = 2131427475;
+			// aapt resource value: 0x7f0b0092
+			public const int TEXT_STATUS_ID = 2131427474;
 			
-			// aapt resource value: 0x7f0b006d
-			public const int TimerView = 2131427437;
+			// aapt resource value: 0x7f0b006a
+			public const int TimerView = 2131427434;
 			
-			// aapt resource value: 0x7f0b0077
-			public const int action0 = 2131427447;
+			// aapt resource value: 0x7f0b0075
+			public const int action0 = 2131427445;
 			
 			// aapt resource value: 0x7f0b0056
 			public const int action_bar = 2131427414;
@@ -1852,17 +1852,17 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0034
 			public const int action_bar_title = 2131427380;
 			
-			// aapt resource value: 0x7f0b0074
-			public const int action_container = 2131427444;
+			// aapt resource value: 0x7f0b0072
+			public const int action_container = 2131427442;
 			
 			// aapt resource value: 0x7f0b0057
 			public const int action_context_bar = 2131427415;
 			
-			// aapt resource value: 0x7f0b007b
-			public const int action_divider = 2131427451;
+			// aapt resource value: 0x7f0b0079
+			public const int action_divider = 2131427449;
 			
-			// aapt resource value: 0x7f0b0075
-			public const int action_image = 2131427445;
+			// aapt resource value: 0x7f0b0073
+			public const int action_image = 2131427443;
 			
 			// aapt resource value: 0x7f0b0002
 			public const int action_menu_divider = 2131427330;
@@ -1879,11 +1879,11 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0036
 			public const int action_mode_close_button = 2131427382;
 			
-			// aapt resource value: 0x7f0b0076
-			public const int action_text = 2131427446;
+			// aapt resource value: 0x7f0b0074
+			public const int action_text = 2131427444;
 			
-			// aapt resource value: 0x7f0b0084
-			public const int actions = 2131427460;
+			// aapt resource value: 0x7f0b0082
+			public const int actions = 2131427458;
 			
 			// aapt resource value: 0x7f0b0037
 			public const int activity_chooser_view_content = 2131427383;
@@ -1896,9 +1896,6 @@ namespace TimeTracker
 			
 			// aapt resource value: 0x7f0b0029
 			public const int always = 2131427369;
-			
-			// aapt resource value: 0x7f0b006b
-			public const int apiUserNme = 2131427435;
 			
 			// aapt resource value: 0x7f0b0030
 			public const int async = 2131427376;
@@ -1915,29 +1912,29 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b002e
 			public const int bottom = 2131427374;
 			
-			// aapt resource value: 0x7f0b008f
-			public const int btn_cancel = 2131427471;
-			
 			// aapt resource value: 0x7f0b008e
-			public const int btn_settings = 2131427470;
+			public const int btn_cancel = 2131427470;
 			
-			// aapt resource value: 0x7f0b0091
-			public const int btn_sqlcancel = 2131427473;
+			// aapt resource value: 0x7f0b008d
+			public const int btn_save = 2131427469;
 			
 			// aapt resource value: 0x7f0b0090
-			public const int btn_view_data = 2131427472;
+			public const int btn_sqlcancel = 2131427472;
+			
+			// aapt resource value: 0x7f0b008f
+			public const int btn_view_data = 2131427471;
 			
 			// aapt resource value: 0x7f0b003d
 			public const int buttonPanel = 2131427389;
 			
-			// aapt resource value: 0x7f0b0078
-			public const int cancel_action = 2131427448;
+			// aapt resource value: 0x7f0b0076
+			public const int cancel_action = 2131427446;
 			
 			// aapt resource value: 0x7f0b004d
 			public const int checkbox = 2131427405;
 			
-			// aapt resource value: 0x7f0b0080
-			public const int chronometer = 2131427456;
+			// aapt resource value: 0x7f0b007e
+			public const int chronometer = 2131427454;
 			
 			// aapt resource value: 0x7f0b002a
 			public const int collapseActionView = 2131427370;
@@ -1960,26 +1957,26 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0011
 			public const int disableHome = 2131427345;
 			
-			// aapt resource value: 0x7f0b0071
-			public const int editComments = 2131427441;
+			// aapt resource value: 0x7f0b006e
+			public const int editComments = 2131427438;
 			
-			// aapt resource value: 0x7f0b008d
-			public const int edit_password = 2131427469;
+			// aapt resource value: 0x7f0b008b
+			public const int edit_password = 2131427467;
 			
 			// aapt resource value: 0x7f0b0058
 			public const int edit_query = 2131427416;
 			
-			// aapt resource value: 0x7f0b0089
-			public const int edit_url = 2131427465;
+			// aapt resource value: 0x7f0b0087
+			public const int edit_url = 2131427463;
 			
-			// aapt resource value: 0x7f0b008b
-			public const int edit_username = 2131427467;
+			// aapt resource value: 0x7f0b0089
+			public const int edit_username = 2131427465;
 			
 			// aapt resource value: 0x7f0b0021
 			public const int end = 2131427361;
 			
-			// aapt resource value: 0x7f0b0086
-			public const int end_padder = 2131427462;
+			// aapt resource value: 0x7f0b0084
+			public const int end_padder = 2131427460;
 			
 			// aapt resource value: 0x7f0b0038
 			public const int expand_activities_button = 2131427384;
@@ -1999,8 +1996,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b003c
 			public const int icon = 2131427388;
 			
-			// aapt resource value: 0x7f0b0085
-			public const int icon_group = 2131427461;
+			// aapt resource value: 0x7f0b0083
+			public const int icon_group = 2131427459;
 			
 			// aapt resource value: 0x7f0b002b
 			public const int ifRoom = 2131427371;
@@ -2011,23 +2008,23 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0067
 			public const int imageView1 = 2131427431;
 			
-			// aapt resource value: 0x7f0b0081
-			public const int info = 2131427457;
+			// aapt resource value: 0x7f0b007f
+			public const int info = 2131427455;
 			
 			// aapt resource value: 0x7f0b0033
 			public const int italic = 2131427379;
 			
-			// aapt resource value: 0x7f0b008c
-			public const int lbl_password = 2131427468;
+			// aapt resource value: 0x7f0b008a
+			public const int lbl_password = 2131427466;
 			
-			// aapt resource value: 0x7f0b0087
-			public const int lbl_title = 2131427463;
+			// aapt resource value: 0x7f0b0085
+			public const int lbl_title = 2131427461;
+			
+			// aapt resource value: 0x7f0b0086
+			public const int lbl_url = 2131427462;
 			
 			// aapt resource value: 0x7f0b0088
-			public const int lbl_url = 2131427464;
-			
-			// aapt resource value: 0x7f0b008a
-			public const int lbl_username = 2131427466;
+			public const int lbl_username = 2131427464;
 			
 			// aapt resource value: 0x7f0b0009
 			public const int line1 = 2131427337;
@@ -2044,20 +2041,23 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b003b
 			public const int list_item = 2131427387;
 			
-			// aapt resource value: 0x7f0b007a
-			public const int media_actions = 2131427450;
-			
-			// aapt resource value: 0x7f0b0096
-			public const int menu_about = 2131427478;
+			// aapt resource value: 0x7f0b0078
+			public const int media_actions = 2131427448;
 			
 			// aapt resource value: 0x7f0b0095
-			public const int menu_refresh = 2131427477;
+			public const int menu_about = 2131427477;
+			
+			// aapt resource value: 0x7f0b0096
+			public const int menu_exit = 2131427478;
 			
 			// aapt resource value: 0x7f0b0097
-			public const int menu_settings = 2131427479;
+			public const int menu_refresh = 2131427479;
 			
 			// aapt resource value: 0x7f0b0094
-			public const int message = 2131427476;
+			public const int menu_settings = 2131427476;
+			
+			// aapt resource value: 0x7f0b0093
+			public const int message = 2131427475;
 			
 			// aapt resource value: 0x7f0b0022
 			public const int middle = 2131427362;
@@ -2074,14 +2074,14 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b000f
 			public const int normal = 2131427343;
 			
-			// aapt resource value: 0x7f0b0083
-			public const int notification_background = 2131427459;
+			// aapt resource value: 0x7f0b0081
+			public const int notification_background = 2131427457;
 			
-			// aapt resource value: 0x7f0b007d
-			public const int notification_main_column = 2131427453;
+			// aapt resource value: 0x7f0b007b
+			public const int notification_main_column = 2131427451;
 			
-			// aapt resource value: 0x7f0b007c
-			public const int notification_main_column_container = 2131427452;
+			// aapt resource value: 0x7f0b007a
+			public const int notification_main_column_container = 2131427450;
 			
 			// aapt resource value: 0x7f0b003f
 			public const int parentPanel = 2131427391;
@@ -2095,11 +2095,11 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b004f
 			public const int radio = 2131427407;
 			
-			// aapt resource value: 0x7f0b0082
-			public const int right_icon = 2131427458;
+			// aapt resource value: 0x7f0b0080
+			public const int right_icon = 2131427456;
 			
-			// aapt resource value: 0x7f0b007e
-			public const int right_side = 2131427454;
+			// aapt resource value: 0x7f0b007c
+			public const int right_side = 2131427452;
 			
 			// aapt resource value: 0x7f0b0019
 			public const int screen = 2131427353;
@@ -2161,14 +2161,14 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b003e
 			public const int spacer = 2131427390;
 			
-			// aapt resource value: 0x7f0b0070
-			public const int spinnerActivities = 2131427440;
+			// aapt resource value: 0x7f0b006d
+			public const int spinnerActivities = 2131427437;
 			
-			// aapt resource value: 0x7f0b006e
-			public const int spinnerCustomers = 2131427438;
+			// aapt resource value: 0x7f0b006b
+			public const int spinnerCustomers = 2131427435;
 			
-			// aapt resource value: 0x7f0b006f
-			public const int spinnerProjects = 2131427439;
+			// aapt resource value: 0x7f0b006c
+			public const int spinnerProjects = 2131427436;
 			
 			// aapt resource value: 0x7f0b0007
 			public const int split_action_bar = 2131427335;
@@ -2182,8 +2182,11 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b001c
 			public const int src_over = 2131427356;
 			
-			// aapt resource value: 0x7f0b0079
-			public const int status_bar_latest_event_content = 2131427449;
+			// aapt resource value: 0x7f0b0077
+			public const int status_bar_latest_event_content = 2131427447;
+			
+			// aapt resource value: 0x7f0b008c
+			public const int status_message = 2131427468;
 			
 			// aapt resource value: 0x7f0b0050
 			public const int submenuarrow = 2131427408;
@@ -2206,14 +2209,14 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0043
 			public const int textSpacerNoTitle = 2131427395;
 			
-			// aapt resource value: 0x7f0b006c
-			public const int textView1 = 2131427436;
+			// aapt resource value: 0x7f0b0071
+			public const int textView1 = 2131427441;
 			
 			// aapt resource value: 0x7f0b0066
 			public const int textView2 = 2131427430;
 			
-			// aapt resource value: 0x7f0b007f
-			public const int time = 2131427455;
+			// aapt resource value: 0x7f0b007d
+			public const int time = 2131427453;
 			
 			// aapt resource value: 0x7f0b000d
 			public const int title = 2131427341;
@@ -2224,11 +2227,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0049
 			public const int title_template = 2131427401;
 			
-			// aapt resource value: 0x7f0b0073
-			public const int toggleButton1 = 2131427443;
-			
-			// aapt resource value: 0x7f0b006a
-			public const int toolbar = 2131427434;
+			// aapt resource value: 0x7f0b0070
+			public const int toggleButton1 = 2131427440;
 			
 			// aapt resource value: 0x7f0b002f
 			public const int top = 2131427375;
@@ -2242,8 +2242,8 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b0008
 			public const int up = 2131427336;
 			
-			// aapt resource value: 0x7f0b0072
-			public const int update = 2131427442;
+			// aapt resource value: 0x7f0b006f
+			public const int update = 2131427439;
 			
 			// aapt resource value: 0x7f0b0017
 			public const int useLogo = 2131427351;
@@ -2443,13 +2443,16 @@ namespace TimeTracker
 			public const int Settings = 2130968623;
 			
 			// aapt resource value: 0x7f040030
-			public const int SqlLayout = 2130968624;
+			public const int spinner_item = 2130968624;
 			
 			// aapt resource value: 0x7f040031
-			public const int support_simple_spinner_dropdown_item = 2130968625;
+			public const int SqlLayout = 2130968625;
 			
 			// aapt resource value: 0x7f040032
-			public const int tooltip = 2130968626;
+			public const int support_simple_spinner_dropdown_item = 2130968626;
+			
+			// aapt resource value: 0x7f040033
+			public const int tooltip = 2130968627;
 			
 			static Layout()
 			{
@@ -2465,7 +2468,7 @@ namespace TimeTracker
 		{
 			
 			// aapt resource value: 0x7f0d0000
-			public const int top_menus = 2131558400;
+			public const int main_menu = 2131558400;
 			
 			static Menu()
 			{
@@ -3124,9 +3127,6 @@ namespace TimeTracker
 			// aapt resource value: 0x7f08007e
 			public const int Base_Widget_AppCompat_Toolbar_Button_Navigation = 2131230846;
 			
-			// aapt resource value: 0x7f08016c
-			public const int MyTheme = 2131231084;
-			
 			// aapt resource value: 0x7f08001e
 			public const int Platform_AppCompat = 2131230750;
 			
@@ -3210,6 +3210,12 @@ namespace TimeTracker
 			
 			// aapt resource value: 0x7f080038
 			public const int RtlUnderlay_Widget_AppCompat_ActionButton_Overflow = 2131230776;
+			
+			// aapt resource value: 0x7f08016f
+			public const int SpinnerBase = 2131231087;
+			
+			// aapt resource value: 0x7f080170
+			public const int SpinnerItemStyle = 2131231088;
 			
 			// aapt resource value: 0x7f0800cf
 			public const int TextAppearance_AppCompat = 2131230927;
@@ -3424,6 +3430,9 @@ namespace TimeTracker
 			// aapt resource value: 0x7f080102
 			public const int TextAppearance_Widget_AppCompat_Toolbar_Title = 2131230978;
 			
+			// aapt resource value: 0x7f08016d
+			public const int TextStyle = 2131231085;
+			
 			// aapt resource value: 0x7f080103
 			public const int Theme_AppCompat = 2131230979;
 			
@@ -3487,6 +3496,9 @@ namespace TimeTracker
 			// aapt resource value: 0x7f080110
 			public const int Theme_AppCompat_NoActionBar = 2131230992;
 			
+			// aapt resource value: 0x7f08016c
+			public const int ThemeBase = 2131231084;
+			
 			// aapt resource value: 0x7f080111
 			public const int ThemeOverlay_AppCompat = 2131230993;
 			
@@ -3507,6 +3519,9 @@ namespace TimeTracker
 			
 			// aapt resource value: 0x7f080117
 			public const int ThemeOverlay_AppCompat_Light = 2131230999;
+			
+			// aapt resource value: 0x7f08016e
+			public const int TimerStyle = 2131231086;
 			
 			// aapt resource value: 0x7f080118
 			public const int Widget_AppCompat_ActionBar = 2131231000;

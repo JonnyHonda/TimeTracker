@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
-    android:id="@+id/linearLayout1">
+    android:id="@+id/linearLayout1"
+    style="@style/ThemeBase">
     <TextView
         android:text="Kimai TimeTracker"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
+        style="@style/TextStyle"
         android:gravity="center_horizontal" />
     <ImageView
         android:src="@mipmap/ic_launcher"
@@ -24,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/versionInfo"
+        style="@style/TextStyle"
         android:gravity="center_horizontal" />
     <TextView
         android:text="@string/author_name"
@@ -31,5 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/author_name"
+        style="@style/TextStyle"
         android:gravity="center_horizontal" />
 </LinearLayout>
