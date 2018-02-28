@@ -13,7 +13,7 @@ namespace TimeTracker
         // {"jsonrpc":"2.0","method":"getActiveRecording","params":["49945438e826988f2e31d8972"],"id":"1"}
         public string jsonrpc { get; set; }
         public string method { get; set; }
-        public List<string> @params { get; set; }
+        public List<object> @params { get; set; }
         public string id { get; set; }
 
     }
@@ -52,7 +52,7 @@ namespace TimeTracker
         /// <returns>The connect.</returns>
         /// <param name="method">Method.</param>
         /// <param name="parameters">Parameters.</param>
-        public void ConnectAsync(string method, List<string> parameters)
+        public void ConnectAsync(string method, List<object> parameters)
         {
             Connection.method = method;
             Connection.@params = parameters;

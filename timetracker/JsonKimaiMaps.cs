@@ -56,6 +56,7 @@ namespace JsonKimaiMaps
         public string customerName { get; set; }
         public string projectName { get; set; }
         public string activityName { get; set; }
+        public string description { get; set; }
     }
 
     /// <summary>
@@ -157,7 +158,14 @@ namespace JsonKimaiMaps
     }
 
 
-
+    public class UpdateMap
+    {
+        public int projectID { get; set; }
+        public int activityID { get; set; }
+        public string description { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
+    }
 }
 
 

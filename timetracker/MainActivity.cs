@@ -19,7 +19,7 @@ namespace TimeTracker
     public class MainActivity : Activity
     {
         public bool debug = false;
- //       public string strEntryId;
+        //       public string strEntryId;
         public bool startButtonState;
         public bool stopButtonState;
 
@@ -52,7 +52,7 @@ namespace TimeTracker
         AppPreferences ap;
         string strApiKey;
         KimaiServer MyKimai = new KimaiServer();
-        public bool IsChangingSpinner = false;
+        // public bool IsChangingSpinner = false;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -80,11 +80,11 @@ namespace TimeTracker
             {
                 // Set up TimetView Font and Colour
                 TextView TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
-                //TODO: Remove ant unsued font files for release build
+                //TODO: Remove any unsued font files for release build
                 Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGIT.TTF");
                 TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
-              //  TimerViewer.SetTextColor(Android.Graphics.Color.Green);
-               
+                //  TimerViewer.SetTextColor(Android.Graphics.Color.Green);
+
                 PopulateCustomersSpinner();
                 MyKimai.url = ap.getAccessKey("URL") + "/core/json.php";
                 RunUpdateLoop();
@@ -92,7 +92,33 @@ namespace TimeTracker
                 Button update_button = FindViewById<Button>(Resource.Id.update);
                 update_button.Click += delegate
                 {
-                    GetActiveRecord();
+                    // Perform an update to the current running timer, so all the server to see if we have one.
+                    if (GetActiveRecord())
+                    {
+                        Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+                        Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+                        List<object> Parameters = new List<object>();
+
+                        Parameters.Add(strApiKey);
+
+                        UpdateMap updateParameters = new UpdateMap();
+                        int Ppos = (int)ProjectSpinner.SelectedItemId;
+                        updateParameters.projectID = ProjectLookupList[Ppos];
+
+                        int Apos = (int)ActivitySpinner.SelectedItemId;
+                        updateParameters.activityID = ActivitiesLookupList[Apos];
+
+                        TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
+                        updateParameters.description = ActivityDescriptionText.Text;
+                        Parameters.Add(updateParameters);
+
+                        System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("updateActiveRecording", Parameters));
+                        taskA.Wait();
+                    }
+                    else
+                    {
+                        Toast.MakeText(this, "There is no active timer running", ToastLength.Long).Show();
+                    }
                 };
 
                 strApiKey = ap.getAccessKey("APIKEY");
@@ -119,14 +145,14 @@ namespace TimeTracker
                             CustomersSpinner.SetSelection(
                                 GetDictionaryKeyFromValue(CustomerLookupList, CurrentCustomerInTimer)
                             );
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); 
+                            Tv2 = FindViewById<TextView>(Resource.Id.textView2);
                             Tv2.Text = RunUpdateLoopState.ToString();
                         }
                         else
                         {
                             togglebutton.Checked = false;
                             RunUpdateLoopState = false;
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2); 
+                            Tv2 = FindViewById<TextView>(Resource.Id.textView2);
                             Tv2.Text = RunUpdateLoopState.ToString();
                         }
 
@@ -140,22 +166,21 @@ namespace TimeTracker
                                 {
                                     Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
                                     Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-                                    List<string> Parameters = new List<string>();
+                                    List<object> Parameters = new List<object>();
 
                                     int pos = (int)ProjectSpinner.SelectedItemId;
                                     Parameters.Add(strApiKey);
                                     Parameters.Add(
                                       ProjectLookupList[pos].ToString()
-                                          
+
                                     );
                                     Parameters.Add(
-                                       // ActivitiesLookupList[CurrentActivityInTimer].ToString()
+                                        // ActivitiesLookupList[CurrentActivityInTimer].ToString()
                                         ActivitiesLookupList[
                                             (int)ActivitySpinner.SelectedItemId
                                             ].ToString()
                                     );
-                                 //   string s = String.Format("{0} - {1} - {2}", CurrentCustomerInTimer, CurrentProjectInTimer, CurrentActivityInTimer);
-                                 //   Toast.MakeText(this, s  ,ToastLength.Long).Show();
+
                                     System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("startRecord", Parameters));
                                     taskA.Wait();
                                     RunUpdateLoopState = true;
@@ -173,7 +198,7 @@ namespace TimeTracker
                             }
                             else
                             {
-                                List<string> Parameters = new List<string>
+                                List<object> Parameters = new List<object>
                                 {
                             strApiKey
                                 };
@@ -231,7 +256,7 @@ namespace TimeTracker
         /// </summary>
         private void LoginToKimai()
         {
-            List<string> Parameters = new List<string>
+            List<object> Parameters = new List<object>
             {
                 ap.getAccessKey("USERNAME"),
                 ap.getAccessKey("PASSWORD")
@@ -255,7 +280,7 @@ namespace TimeTracker
             ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
 
             bool activeEvent = false;
-            List<string> Parameters = new List<string>
+            List<object> Parameters = new List<object>
             {
                 strApiKey
             };
@@ -287,7 +312,8 @@ namespace TimeTracker
 
                     UInt32 StartTimeInUnixTime = ActiveRecordingObject.Result.Items[0].start;
                     UInt32 TimeNowInUnixTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-
+                    TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
+                    ActivityDescriptionText.Text = ActiveRecordingObject.Result.Items[0].description;
                     try
                     {
                         DurationCount = TimeNowInUnixTime - StartTimeInUnixTime;
@@ -299,7 +325,7 @@ namespace TimeTracker
                         DurationCount = 0;
                     }
                     activeEvent = true;
-                                       
+
                     // We have a lookup value so we need an index to use
                     CurrentCustomerInTimer = ActiveRecordingObject.Result.Items[0].customerID;
                     CurrentProjectInTimer = ActiveRecordingObject.Result.Items[0].projectID;
@@ -310,7 +336,7 @@ namespace TimeTracker
                 else
                 {
                     projectText.Text = "No Active Recording.";
-                 //   TimerViewer.Text = "00:00:00";
+                    //   TimerViewer.Text = "00:00:00";
                     activeEvent = false;
                 }
                 return activeEvent;
@@ -398,7 +424,7 @@ namespace TimeTracker
         {
             Spinner spinner = (Spinner)sender;
 
-           // Now populate the Project spinner based on the selected customerID
+            // Now populate the Project spinner based on the selected customerID
             PopulateProjectsSpinner(CustomerLookupList[e.Position]);
             //CurrentCustomerInTimer = e.Position;
         }
@@ -446,8 +472,6 @@ namespace TimeTracker
             Spinner spinner = (Spinner)sender;
             // Now populate the activities spinner bases on the Projectid selected
             PopulateActivitiesSpinner(ProjectLookupList[e.Position]);
-       //     CurrentProjectInTimer = e.Position;
-      //      ap.saveAccessKey("CurrentProjectInTimer", CurrentProjectInTimer.ToString());
         }
 
 
@@ -461,7 +485,7 @@ namespace TimeTracker
             ActivitiesSpinner.SetSelection(0);
             try
             {
-                
+
                 ActivitiesLookupList.Clear();
                 var activities = db.Query<ProjectActivity>("SELECT * FROM ProjectActivity WHERE ProjectID = ?", projectID);
                 int index = 0;
@@ -478,13 +502,9 @@ namespace TimeTracker
 
                 }
 
-                //     int a = GetDictionaryKeyFromValue(ActivitiesLookupList, CurrentActivityInTimer);
-
                 ActivitiesSpinner.SetSelection(
                     GetDictionaryKeyFromValue(ActivitiesLookupList, CurrentActivityInTimer)
                 );
-                
-          //      ActivitiesSpinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs>(ActivitySpinnerItemSelected);
             }
             catch (Exception ex)
             {
@@ -494,7 +514,7 @@ namespace TimeTracker
 
         private void ActivitySpinnerItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-           // CurrentActivityInTimer = e.Position;
+            // CurrentActivityInTimer = e.Position;
         }
 
         /// <summary>

@@ -1954,11 +1954,11 @@ namespace TimeTracker
 			// aapt resource value: 0x7f0b003a
 			public const int default_activity_button = 2131427386;
 			
+			// aapt resource value: 0x7f0b006e
+			public const int description = 2131427438;
+			
 			// aapt resource value: 0x7f0b0011
 			public const int disableHome = 2131427345;
-			
-			// aapt resource value: 0x7f0b006e
-			public const int editComments = 2131427438;
 			
 			// aapt resource value: 0x7f0b008b
 			public const int edit_password = 2131427467;

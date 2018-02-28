@@ -45,7 +45,7 @@
             android:inputType="textMultiLine"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/editComments"
+            android:id="@+id/description"
             android:hint="Comments (not implemented)"
             android:maxLines="4"
             android:gravity="top"
