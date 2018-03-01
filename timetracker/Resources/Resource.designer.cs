@@ -2504,6 +2504,9 @@ namespace TimeTracker
 			// aapt resource value: 0x7f030006
 			public const int ic_launcher = 2130903046;
 			
+			// aapt resource value: 0x7f030007
+			public const int ic_stat_timer = 2130903047;
+			
 			static Mipmap()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

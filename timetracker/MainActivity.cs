@@ -353,6 +353,18 @@ namespace TimeTracker
         /// </summary>
         private async void RunUpdateLoop()
         {
+            // Instantiate the builder and set notification elements:
+            Notification.Builder builder = new Notification.Builder(this)
+                .SetContentTitle("Long Running Timer Notification")
+                .SetContentText("You have a timer that has been running for more than 7 hours")
+                .SetSmallIcon(Resource.Mipmap.ic_stat_timer);
+           
+            // Build the notification:
+            Notification notification = builder.Build();
+
+            // Get the notification manager:
+            NotificationManager notificationManager =
+                GetSystemService(Context.NotificationService) as NotificationManager;
             while (true)
             {
                 await System.Threading.Tasks.Task.Delay(1000);
@@ -366,6 +378,12 @@ namespace TimeTracker
                         hours = (time.Days * 24) + hours;
                     }
 
+                    // If the timer is running for more than 7.5 hours raise the alert
+                    if(DurationCount > (7.5 * 3600)){
+                        // Publish the notification:
+                        const int notificationId = 0;
+                        notificationManager.Notify(notificationId, notification);
+                    }
                     string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
                     TimerViewer.Text = str;
                     Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
