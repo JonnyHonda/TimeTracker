@@ -92,28 +92,28 @@ namespace TimeTracker
                 Button update_button = FindViewById<Button>(Resource.Id.update);
                 update_button.Click += delegate
                 {
+                    TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
+                    string newDescription = ActivityDescriptionText.Text;
+                    Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+                    Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+                    int Ppos = (int)ProjectSpinner.SelectedItemId;
+                    int Apos = (int)ActivitySpinner.SelectedItemId;
                     // Perform an update to the current running timer, so all the server to see if we have one.
                     if (GetActiveRecord())
                     {
-                        Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-                        Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
                         List<object> Parameters = new List<object>();
-
                         Parameters.Add(strApiKey);
-
                         UpdateMap updateParameters = new UpdateMap();
-                        int Ppos = (int)ProjectSpinner.SelectedItemId;
+
                         updateParameters.projectID = ProjectLookupList[Ppos];
-
-                        int Apos = (int)ActivitySpinner.SelectedItemId;
                         updateParameters.activityID = ActivitiesLookupList[Apos];
+                        updateParameters.description = newDescription;
 
-                        TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
-                        updateParameters.description = ActivityDescriptionText.Text;
                         Parameters.Add(updateParameters);
 
                         System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("updateActiveRecording", Parameters));
                         taskA.Wait();
+                        GetActiveRecord();
                     }
                     else
                     {

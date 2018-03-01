@@ -51,7 +51,6 @@
             android:gravity="top"
             android:minLines="4"
             android:layout_weight="100"
-            android:textColor="#ffd50000"
             style="@style/TextStyle" />
         <Button
             android:text="Update"

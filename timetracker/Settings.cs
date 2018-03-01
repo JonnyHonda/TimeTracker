@@ -62,13 +62,14 @@ namespace TimeTracker
 
                 TextView password = FindViewById<TextView>(Resource.Id.edit_password);
                 string strApiPassword = password.Text.Trim(charsToTrim);
+
                 TextView statusMessage = FindViewById<TextView>(Resource.Id.status_message);
 
                 ap.saveAccessKey("URL", strApiUrl, true);
                 ap.saveAccessKey("USERNAME", strApiUserName, true);
                 ap.saveAccessKey("PASSWORD", strApiPassword, true);
 
-                List<string> Parameters = new List<string>();
+                List<object> Parameters = new List<object>();
                 Parameters.Add(strApiUserName);
                 Parameters.Add(strApiPassword);
                 KimaiServer MyKimai = new KimaiServer(strApiUrl + "/core/json.php");
