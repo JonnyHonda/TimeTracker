@@ -278,7 +278,7 @@ namespace TimeTracker
         /// </summary>
         private bool GetActiveRecord()
         {
-            ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
+             togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
 
             bool activeEvent = false;
             List<object> Parameters = new List<object>
@@ -329,9 +329,6 @@ namespace TimeTracker
                 }
                 else
                 {
-                    //RunUpdateLoopState = false;
-                    //togglebutton.Checked = false;
-                    //   TimerViewer.Text = "00:00:00";
                     activeEvent = false;
                 }
                 return activeEvent;
@@ -365,6 +362,9 @@ namespace TimeTracker
                 await System.Threading.Tasks.Task.Delay(1000);
                 TimeSpan time = TimeSpan.FromSeconds(DurationCount++);
                 TextView TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
+                TextView description = FindViewById<TextView>(Resource.Id.description);
+                Button UpdateButton = FindViewById<Button>(Resource.Id.update);
+
                 if (RunUpdateLoopState)
                 {
                     int hours = time.Hours;
@@ -381,10 +381,14 @@ namespace TimeTracker
                     }
                     string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
                     TimerViewer.Text = str;
+                    description.Enabled = true;
+                    UpdateButton.Enabled = true;
                 }
                 else
                 {
                     TimerViewer.Text = "00:00:00";
+                    description.Enabled = false;
+                    UpdateButton.Enabled = false;
                 }
             }
         }
