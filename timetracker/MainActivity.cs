@@ -3,7 +3,6 @@ using Android.Widget;
 using Android.OS;
 using System.Collections.Generic;
 using System;
-using System.Threading.Tasks;
 using Android.Content;
 using Android.Views;
 using SQLite;
@@ -18,8 +17,6 @@ namespace TimeTracker
     [Activity(Label = "TimeTracker", MainLauncher = true, Icon = "@mipmap/ic_launcher")]
     public class MainActivity : Activity
     {
-        public bool debug = false;
-        //       public string strEntryId;
         public bool startButtonState;
         public bool stopButtonState;
 
@@ -28,7 +25,6 @@ namespace TimeTracker
         public int CurrentProjectInTimer = 0;
         public int CurrentActivityInTimer = 0;
 
-        //   public TextView TimerViewer;
         public TextView Tv2;
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
@@ -52,7 +48,6 @@ namespace TimeTracker
         AppPreferences ap;
         string strApiKey;
         KimaiServer MyKimai = new KimaiServer();
-        // public bool IsChangingSpinner = false;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -80,19 +75,19 @@ namespace TimeTracker
             {
                 // Set up TimetView Font and Colour
                 TextView TimerViewer = FindViewById<TextView>(Resource.Id.TimerView);
-                //TODO: Remove any unsued font files for release build
                 Typeface tf = Typeface.CreateFromAsset(Application.Context.Assets, "DS-DIGIT.TTF");
                 TimerViewer.SetTypeface(tf, TypefaceStyle.Normal);
-                //  TimerViewer.SetTextColor(Android.Graphics.Color.Green);
 
                 PopulateCustomersSpinner();
                 MyKimai.url = ap.getAccessKey("URL") + "/core/json.php";
                 RunUpdateLoop();
 
+                TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
+
                 Button update_button = FindViewById<Button>(Resource.Id.update);
                 update_button.Click += delegate
                 {
-                    TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
+                    
                     string newDescription = ActivityDescriptionText.Text;
                     Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
                     Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
@@ -113,7 +108,9 @@ namespace TimeTracker
 
                         System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("updateActiveRecording", Parameters));
                         taskA.Wait();
+                        Toast.MakeText(this, "Activity updated", ToastLength.Long).Show();
                         GetActiveRecord();
+
                     }
                     else
                     {
@@ -128,7 +125,6 @@ namespace TimeTracker
                     if (string.IsNullOrEmpty(strApiKey))
                     {
                         // No, Let's log in
-
                         LoginToKimai();
                     }
                     else
@@ -175,7 +171,6 @@ namespace TimeTracker
 
                                     );
                                     Parameters.Add(
-                                        // ActivitiesLookupList[CurrentActivityInTimer].ToString()
                                         ActivitiesLookupList[
                                             (int)ActivitySpinner.SelectedItemId
                                             ].ToString()
@@ -219,9 +214,14 @@ namespace TimeTracker
                 }
             }
         }
+
+        /// <summary>
+        /// Ons the create options menu.
+        /// </summary>
+        /// <returns><c>true</c>, if create options menu was oned, <c>false</c> otherwise.</returns>
+        /// <param name="menu">Menu.</param>
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-
             MenuInflater.Inflate(Resource.Menu.main_menu, menu);
             return true;
         }
@@ -271,12 +271,12 @@ namespace TimeTracker
                 throw (ex);
             }
         }
+
         /// <summary>
         /// Gets the active record.
         /// </summary>
         private bool GetActiveRecord()
         {
-            TextView projectText = FindViewById<TextView>(Resource.Id.textView1);
             ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
 
             bool activeEvent = false;
@@ -300,20 +300,13 @@ namespace TimeTracker
                 bool Success = ActiveRecordingObject.Result.Success;
                 if (Success)
                 {
-                    // Tepoary text for debugging buttons and spinners
-                    projectText.Text = "Customer: ";
-                    projectText.Append(ActiveRecordingObject.Result.Items[0].customerName);
-                    projectText.Append(System.Environment.NewLine);
-                    projectText.Append("Project: ");
-                    projectText.Append(ActiveRecordingObject.Result.Items[0].projectName);
-                    projectText.Append(System.Environment.NewLine);
-                    projectText.Append("Activity:");
-                    projectText.Append(ActiveRecordingObject.Result.Items[0].activityName);
-
                     UInt32 StartTimeInUnixTime = ActiveRecordingObject.Result.Items[0].start;
                     UInt32 TimeNowInUnixTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
                     TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
                     ActivityDescriptionText.Text = ActiveRecordingObject.Result.Items[0].description;
+                    RunUpdateLoopState = true;
+                    togglebutton.Checked = true;
                     try
                     {
                         DurationCount = TimeNowInUnixTime - StartTimeInUnixTime;
@@ -335,7 +328,8 @@ namespace TimeTracker
                 }
                 else
                 {
-                    projectText.Text = "No Active Recording.";
+                    RunUpdateLoopState = false;
+                    togglebutton.Checked = false;
                     //   TimerViewer.Text = "00:00:00";
                     activeEvent = false;
                 }
@@ -433,6 +427,7 @@ namespace TimeTracker
             }
 
         }
+
         /// <summary>
         /// Customers the spinner item selected.
         /// </summary>

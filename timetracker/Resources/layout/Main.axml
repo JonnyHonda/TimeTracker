@@ -19,8 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_columnSpan="3"
-        android:spinnerMode="dialog"
-        android:dropDownSelector="@drawable/abc_ic_ab_back_material" />
+        android:spinnerMode="dialog" />
     <Spinner
         android:id="@+id/spinnerProjects"
         android:layout_width="match_parent"
@@ -46,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/description"
-            android:hint="Comments (not implemented)"
+            android:hint="No comments set"
             android:maxLines="4"
             android:gravity="top"
             android:minLines="4"
@@ -59,12 +58,6 @@
             android:id="@+id/update"
             android:layout_gravity="right" />
     </LinearLayout>
-    <TextView
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textView2"
-        android:layout_columnSpan="3"
-        style="@style/TextStyle" />
     <ToggleButton
         android:id="@+id/toggleButton1"
         android:layout_columnSpan="3"
@@ -74,13 +67,4 @@
         android:textOn="Stop Timer"
         android:ems="6"
         android:lines="2" />
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView1"
-        android:maxLines="4"
-        android:gravity="top"
-        android:minLines="4"
-        android:layout_columnSpan="3" />
 </GridLayout>
