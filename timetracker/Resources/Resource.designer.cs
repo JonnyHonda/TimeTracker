@@ -588,6 +588,9 @@ namespace TimeTracker
 			// aapt resource value: 0x7f090005
 			public const int Widget_Compat_NotificationActionText = 2131296261;
 			
+			// aapt resource value: 0x7f09000c
+			public const int button_text = 2131296268;
+			
 			static Style()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

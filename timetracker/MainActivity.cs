@@ -25,7 +25,6 @@ namespace TimeTracker
         public int CurrentProjectInTimer = 0;
         public int CurrentActivityInTimer = 0;
 
-        public TextView Tv2;
         public bool RunUpdateLoopState = true;
         public UInt32 DurationCount = 1;
         /// <summary>
@@ -48,7 +47,8 @@ namespace TimeTracker
         AppPreferences ap;
         string strApiKey;
         KimaiServer MyKimai = new KimaiServer();
-
+        ToggleButton togglebutton;
+         
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -62,7 +62,7 @@ namespace TimeTracker
             // Fetch App Prefs
             Context mContext = Application.Context;
             ap = new AppPreferences(mContext);
-
+            togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
             if (string.IsNullOrEmpty(ap.getAccessKey("URL")) ||
                 string.IsNullOrEmpty(ap.getAccessKey("APIKEY")) ||
                 string.IsNullOrEmpty(ap.getAccessKey("USERNAME")) ||
@@ -82,42 +82,6 @@ namespace TimeTracker
                 MyKimai.url = ap.getAccessKey("URL") + "/core/json.php";
                 RunUpdateLoop();
 
-                TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
-
-                Button update_button = FindViewById<Button>(Resource.Id.update);
-                update_button.Click += delegate
-                {
-                    
-                    string newDescription = ActivityDescriptionText.Text;
-                    Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
-                    Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
-                    int Ppos = (int)ProjectSpinner.SelectedItemId;
-                    int Apos = (int)ActivitySpinner.SelectedItemId;
-                    // Perform an update to the current running timer, so all the server to see if we have one.
-                    if (GetActiveRecord())
-                    {
-                        List<object> Parameters = new List<object>();
-                        Parameters.Add(strApiKey);
-                        UpdateMap updateParameters = new UpdateMap();
-
-                        updateParameters.projectID = ProjectLookupList[Ppos];
-                        updateParameters.activityID = ActivitiesLookupList[Apos];
-                        updateParameters.description = newDescription;
-
-                        Parameters.Add(updateParameters);
-
-                        System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("updateActiveRecording", Parameters));
-                        taskA.Wait();
-                        Toast.MakeText(this, "Activity updated", ToastLength.Long).Show();
-                        GetActiveRecord();
-
-                    }
-                    else
-                    {
-                        Toast.MakeText(this, "There is no active timer running", ToastLength.Long).Show();
-                    }
-                };
-
                 strApiKey = ap.getAccessKey("APIKEY");
                 // Do we haave an api key?
                 try
@@ -130,7 +94,7 @@ namespace TimeTracker
                     else
                     {
                         //
-                        ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
+                       // ToggleButton togglebutton = FindViewById<ToggleButton>(Resource.Id.toggleButton1);
                         // Let's get the data for any current active recording and update the start/stop button states
 
                         if (GetActiveRecord())
@@ -141,17 +105,14 @@ namespace TimeTracker
                             CustomersSpinner.SetSelection(
                                 GetDictionaryKeyFromValue(CustomerLookupList, CurrentCustomerInTimer)
                             );
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2);
-                            Tv2.Text = RunUpdateLoopState.ToString();
                         }
                         else
                         {
                             togglebutton.Checked = false;
                             RunUpdateLoopState = false;
-                            Tv2 = FindViewById<TextView>(Resource.Id.textView2);
-                            Tv2.Text = RunUpdateLoopState.ToString();
                         }
 
+                        TextView ActivityDescriptionText = FindViewById<TextView>(Resource.Id.description);
                         togglebutton.Click += (o, e) =>
                         {
 
@@ -201,8 +162,42 @@ namespace TimeTracker
                                 taskA.Wait();
                                 RunUpdateLoopState = false;
                                 DurationCount = 0;
-
+                                ActivityDescriptionText.Text = "";
                                 GetActiveRecord();
+                            }
+                        };
+
+                        Button update_button = FindViewById<Button>(Resource.Id.update);
+                        update_button.Click += delegate
+                        {
+
+                            string newDescription = ActivityDescriptionText.Text;
+                            Spinner ProjectSpinner = FindViewById<Spinner>(Resource.Id.spinnerProjects);
+                            Spinner ActivitySpinner = FindViewById<Spinner>(Resource.Id.spinnerActivities);
+                            int Ppos = (int)ProjectSpinner.SelectedItemId;
+                            int Apos = (int)ActivitySpinner.SelectedItemId;
+                            // Perform an update to the current running timer, so all the server to see if we have one.
+                            if (GetActiveRecord())
+                            {
+                                List<object> Parameters = new List<object>();
+                                Parameters.Add(strApiKey);
+                                UpdateMap updateParameters = new UpdateMap();
+
+                                updateParameters.projectID = ProjectLookupList[Ppos];
+                                updateParameters.activityID = ActivitiesLookupList[Apos];
+                                updateParameters.description = newDescription;
+
+                                Parameters.Add(updateParameters);
+
+                                System.Threading.Tasks.Task taskA = System.Threading.Tasks.Task.Factory.StartNew(() => MyKimai.ConnectAsync("updateActiveRecording", Parameters));
+                                taskA.Wait();
+                                Toast.MakeText(this, "Activity updated", ToastLength.Long).Show();
+                                GetActiveRecord();
+
+                            }
+                            else
+                            {
+                                Toast.MakeText(this, "There is no active timer running", ToastLength.Long).Show();
                             }
                         };
                     }
@@ -236,7 +231,13 @@ namespace TimeTracker
             switch (item.ItemId)
             {
                 case Resource.Id.menu_refresh:
-                    GetActiveRecord();
+                    if(GetActiveRecord()){
+                        togglebutton.Checked = true;
+                        RunUpdateLoopState = true;
+                    }else{
+                        togglebutton.Checked = false;
+                        RunUpdateLoopState = false;
+                    }
                     break;
                 case Resource.Id.menu_about:
                     StartActivity(typeof(About));
@@ -328,8 +329,8 @@ namespace TimeTracker
                 }
                 else
                 {
-                    RunUpdateLoopState = false;
-                    togglebutton.Checked = false;
+                    //RunUpdateLoopState = false;
+                    //togglebutton.Checked = false;
                     //   TimerViewer.Text = "00:00:00";
                     activeEvent = false;
                 }
@@ -372,7 +373,7 @@ namespace TimeTracker
                         hours = (time.Days * 24) + hours;
                     }
 
-                    // If the timer is running for more than 7.5 hours raise the alert
+                    // If the timer is running for more than 7.5 hours raise the notification
                     if(DurationCount > (7.5 * 3600)){
                         // Publish the notification:
                         const int notificationId = 0;
@@ -380,7 +381,6 @@ namespace TimeTracker
                     }
                     string str = String.Format("{0:00}:{1:00}:{2:00}", hours, time.Minutes, time.Seconds);
                     TimerViewer.Text = str;
-                    Tv2 = FindViewById<TextView>(Resource.Id.textView2); Tv2.Text = "Running";
                 }
                 else
                 {
